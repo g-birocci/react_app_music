@@ -1,13 +1,18 @@
-import { FaArrowLeft, FaCog } from 'react-icons/fa'
+import { FaArrowLeft, FaCog } from 'react-icons/fa';
+import Link from "next/link";
 
 export default function Perfil() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
+    <div>
 
       {/* Cabeçalho */}
-      <div className="flex justify-between items-center px-6 pt-10">
+      <div className="flex justify-between items-center px-4 pt-2">
         <FaArrowLeft className="w-6 h-6 cursor-pointer" />
-        <FaCog className="w-6 h-6 cursor-pointer" />
+
+        {/* Link para editar perfil */}
+        <Link href="/editar-perfil">
+          <FaCog className="w-6 h-6 cursor-pointer" />
+        </Link>
       </div>
 
       {/* Perfil */}
