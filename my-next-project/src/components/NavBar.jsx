@@ -8,7 +8,7 @@ export default function Navbar() {
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold text-green-400">
-          🎵 Spotidados
+           All Music
         </Link>
 
         <div className="flex space-x-6">
