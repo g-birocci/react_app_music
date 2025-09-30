@@ -1,7 +1,16 @@
+import { useState } from 'react';
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 import Link from "next/link";
 
 export default function Perfil() {
+
+  const [compartilhado, setCompartilhado] = useState(false);
+
+  function compartilhar() {
+    setCompartilhado(true);
+    setTimeout(() => setCompartilhado(false), 1000);
+  }
+
   return (
     <div>
 
@@ -26,9 +35,17 @@ export default function Perfil() {
         <p className="text-sm opacity-80">
           Portugal
         </p>
-        <button className="mt-3 bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-full font-semibold cursor-pointer">
+        <button
+          onClick={compartilhar}
+          className="mt-3 bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-full font-semibold cursor-pointer"
+        >
           Compartilhar Perfil
         </button>
+        {compartilhado && (
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/10 text-white px-6 py-3 rounded shadow-md z-50">
+            Perfil compartilhado!
+          </div>
+        )}
       </div>
 
       {/* Estatísticas */}
