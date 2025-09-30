@@ -5,7 +5,7 @@ function Chip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1 rounded-full text-sm border transition ${
+      className={`px-15 py-3 rounded-full text-sm border transition ${
         active
           ? "bg-white text-slate-900 border-white shadow-sm"
           : "bg-white/10 text-white border-white/40 hover:bg-white/20"
@@ -18,7 +18,7 @@ function Chip({ active, onClick, children }) {
 
 function Row({ index, label }) {
   return (
-    <button className="w-full flex items-center justify-between px-3 py-3 rounded-xl bg-white/90 hover:bg-white transition text-slate-900">
+    <button className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/90 hover:bg-white transition text-slate-900">
       <span className="text-xs font-medium tracking-wider mr-3">#{index}</span>
       <span className="flex-1 text-left text-sm">{label}</span>
       <Play size={16} className="opacity-40" />
@@ -32,16 +32,16 @@ export default function Top100({ songs = [], artists = [] }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
-      <div className="max-w-[420px] mx-auto pb-24">
+      <div className="max-w-[500px] mx-auto pb-24">
         {/* título central como no mock */}
         <div className="pt-3">
-          <div className="mx-auto w-fit rounded-xl bg-white/90 text-slate-900 px-5 py-1.5 font-semibold shadow">
+          <div className="mx-auto w-fit rounded-xl bg-white/90 text-slate-900 px-60 py-2 font-semibold shadow">
             TOP #100
           </div>
         </div>
 
         {/* linha: back | tabs (centrado) | filtro */}
-        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4">
+        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap- px-4">
           <button className="p-2 rounded-xl bg-white/10 hover:bg-white/20 justify-self-start">
             <ChevronLeft />
           </button>
