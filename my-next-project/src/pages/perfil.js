@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 import Link from "next/link";
+import { useContext } from "react";
+import { UserContext } from "../estadoGlobal/UserContext";
 
 export default function Perfil() {
+
+  const { user } = useContext(UserContext);
 
   const [compartilhado, setCompartilhado] = useState(false);
 
@@ -31,10 +35,8 @@ export default function Perfil() {
           alt="Foto de Perfil"
           className="w-40 h-40 rounded-full"
         />
-        <h2 className="mt-3 text-2xl font-bold">Sara Leite</h2>
-        <p className="text-sm opacity-80">
-          Portugal
-        </p>
+        <h2 className="mt-3 text-2xl font-bold">{user.nome}</h2>
+        <p className="text-sm opacity-80">{user.pais}</p>
         <button
           onClick={compartilhar}
           className="mt-3 bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-full font-semibold cursor-pointer"
