@@ -74,46 +74,89 @@ export function useSpotiHistory() {
   // ------------------------
   // Top 100
   // ------------------------
-  const top100Artistas = () => {
+
+  //Os filtros funcionam como se o presente fosse dez/2023 (última data real).
+  //Últimas 4 semanas - retorna plays entre novembro–dezembro 2023.
+  //6 meses - pegar plays de junho–dezembro 2023.
+  //1 ano - dez/2022 a dez/2023.
+  //Desde sempre - 2014 a 2023.
+
+  const [maxDate, setMaxDate] = useState(null);
+
+  useEffect(() => {
+    if (!history || history.length === 0) {
+      setMaxDate(null);
+      return;
+    }
+
+    const dates = history
+      .map(m => new Date(m.ts).getTime())
+      .filter(Boolean);
+
+    const max = dates.reduce((a, b) => (b > a ? b : a), 0);
+    setMaxDate(max);
+  }, [history]);
+
+  // Função de filtro por período
+  const filterByPeriod = (period = "all") => {
+    if (!history || history.length === 0 || !maxDate) return [];
+
+    return history.filter(m => {
+      if (!m.ts) return false;
+      const time = new Date(m.ts).getTime();
+      const diff = maxDate - time;
+
+      switch (period) {
+        case "4weeks": return diff <= 1000 * 60 * 60 * 24 * 28;
+        case "6months": return diff <= 1000 * 60 * 60 * 24 * 30 * 6;
+        case "1year": return diff <= 1000 * 60 * 60 * 24 * 365;
+        case "all":
+        default: return true;
+      }
+    });
+  };
+
+  const top100Artistas = (period = "all") => {
     if (!history || history.length === 0) return [];
+
+    // Filtra o histórico pelo período
+    const filtered = filterByPeriod(period);
+
     const contagem = {};
-    history.forEach(m => {
+    filtered.forEach(m => {
       const artista = m.master_metadata_album_artist_name;
       if (artista) contagem[artista] = (contagem[artista] || 0) + 1;
     });
+
     return Object.entries(contagem)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 100)
       .map(([artista, plays]) => ({ artista, plays }));
   };
 
-const top100MusicasPorDuracao = () => {
-  if (!history || history.length === 0) return [];
+  const top100MusicasPorDuracao = (period = "all") => {
+    if (!history || history.length === 0) return [];
 
-  const contagem = {};
+    const filtered = filterByPeriod(period);
 
-  history.forEach(m => {
-    const musica = m.master_metadata_track_name;
-    const artista = m.master_metadata_album_artist_name;
-    if (musica && artista) {
-      const key = `${musica}—${artista}`;
-      contagem[key] = (contagem[key] || 0) + (m.ms_played || 0);
-    }
-  });
-
-  return Object.entries(contagem)
-    .sort((a, b) => b[1] - a[1]) // ordenar pelo tempo total tocado
-    .slice(0, 100)
-    .map(([key, ms_played]) => {
-      const [musica, artista] = key.split('—');
-      return { musica, artista, ms_played };
+    const contagem = {};
+    filtered.forEach(m => {
+      const musica = m.master_metadata_track_name;
+      const artista = m.master_metadata_album_artist_name;
+      if (musica && artista) {
+        const key = `${musica}—${artista}`;
+        contagem[key] = (contagem[key] || 0) + (m.ms_played || 0);
+      }
     });
-};
 
-
-
-
-
+    return Object.entries(contagem)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 100)
+      .map(([key, ms_played]) => {
+        const [musica, artista] = key.split('—');
+        return { musica, artista, ms_played };
+      });
+  };
 
   // ------------------------
   // Estatísticas de um artista

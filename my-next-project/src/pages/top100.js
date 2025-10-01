@@ -31,8 +31,11 @@ export default function Top100Page() {
   const router = useRouter();
   const [tab, setTab] = useState("songs");
   const [visible, setVisible] = useState(10);
-  const { top100Artistas, top100MusicasPorDuracao } = useSpotiHistory();
+  const { top100Artistas, top100MusicasPorDuracao, loading } = useSpotiHistory();
   const [compartilhado, setCompartilhado] = useState(false);
+  const [period, setPeriod] = useState("all");
+  const [showMenu, setShowMenu] = useState(false);
+
 
   useEffect(() => {
     setVisible(10);
@@ -42,23 +45,31 @@ export default function Top100Page() {
     setCompartilhado(true);
     setTimeout(() => setCompartilhado(false), 1500);
   }
+  
+  const songs = useMemo(() => {
+  if (!top100MusicasPorDuracao || loading) return [];
+  return top100MusicasPorDuracao(period) || [];
+}, [top100MusicasPorDuracao, period, loading]);
 
-  const songs = useMemo(() => top100MusicasPorDuracao() || [], [top100MusicasPorDuracao]);
-  const artists = useMemo(() => top100Artistas() || [], [top100Artistas]);
+const artists = useMemo(() => {
+  if (!top100Artistas || loading) return [];
+  return top100Artistas(period) || [];
+}, [top100Artistas, period, loading]);
+
   const list = tab === "songs" ? songs : artists;
 
   const items = list.slice(0, visible);
   const hasMore = visible < list.length;
 
-  if (!songs.length && !artists.length) {
+  if (loading) {
     return <div className="text-3xl font-bold">Carregando seu Top 100...</div>
   }
 
   const loadMore = () => setVisible(v => Math.min(v + 10, list.length));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
-      <div className="max-w-[420px] mx-auto pb-2">
+    <div>
+      <div className="max-w-[420px] mx-auto pb-7">
 
 
         <div className="sticky top-0 z-26 pointer-events-none">
@@ -75,7 +86,6 @@ export default function Top100Page() {
                 shadow-lg
               "
             >
-
               <div className="pt-[env(safe-area-inset-top)] pt-2">
                 <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-4xl font-semibold shadow">
                   TOP #100
@@ -86,7 +96,7 @@ export default function Top100Page() {
               <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-2">
                 <button
                   onClick={() => router.back()}
-                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20"
+                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 cursor-pointer"
                   aria-label="Voltar"
                 >
                   <ChevronLeft />
@@ -100,19 +110,30 @@ export default function Top100Page() {
                     Artistas
                   </Chip>
                 </div>
+                <div className="relative">
+                  <button
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 cursor-pointer"
+                    onClick={() => setShowMenu(prev => !prev)}
+                    aria-label="Filtros"
+                  >
+                    <Filter />
+                  </button>
 
-                <button
-                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20"
-                  aria-label="Filtros"
-                >
-                  <Filter />
-                </button>
+                  {showMenu && (
+                    <div className="absolute right-0 mt-2 w-30 bg-white/80 backdrop-blur-md rounded shadow-lg text-black text-sm z-50">
+                      <button onClick={() => { setPeriod("4weeks"); setShowMenu(false); }} className="block w-full px-4 py-2 text-left hover:bg-cyan-400/60 cursor-pointer">4 semanas</button>
+                      <button onClick={() => { setPeriod("6months"); setShowMenu(false); }} className="block w-full px-4 py-2 text-left hover:bg-cyan-400/60 cursor-pointer">6 meses</button>
+                      <button onClick={() => { setPeriod("1year"); setShowMenu(false); }} className="block w-full px-4 py-2 text-left hover:bg-cyan-400/60 cursor-pointer">Último ano</button>
+                      <button onClick={() => { setPeriod("all"); setShowMenu(false); }} className="block w-full px-4 py-2 text-left hover:bg-cyan-400/60 cursor-pointer">Sempre</button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* ações */}
               <div className="justify-self-center flex gap-2 px-4 pb-3">
                 <button className="flex items-center mt-3 bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-3 gap-2 rounded-full font-semibold cursor-pointer"
->
+                >
                   <Play size={14} /> Play
                 </button>
 
@@ -136,6 +157,11 @@ export default function Top100Page() {
 
       {/* LISTA */}
       <div className="p-4 grid gap-3">
+        {items.length === 0 && (
+          <div className="text-center text-white/70 py-4">
+            Nenhuma música ou artista encontrado para este período
+          </div>
+        )}
 
         {items.map((item, i) => (
           tab === "songs" ? (
