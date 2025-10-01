@@ -52,9 +52,9 @@ export default function Top100Page() {
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
       <div className="max-w-[420px] mx-auto pb-24">
 
-        {/* HEADER FIXO (flutuante + glass) */}
+        
         <div className="sticky top-0 z-26 pointer-events-none">
-          {/* fade para transição suave do conteúdo */}
+        
           <div className="h-2 bg-gradient-to-b from-cyan-400/60 to-transparent" />
           <div className="px-2 pb-2">
             <div
@@ -67,7 +67,7 @@ export default function Top100Page() {
                 shadow-lg
               "
             >
-              {/* badge TOP */}
+              
               <div className="pt-[env(safe-area-inset-top)] pt-2">
                 <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-sm font-semibold shadow">
                   TOP #100
