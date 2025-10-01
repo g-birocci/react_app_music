@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { ChevronLeft, Filter, Play, Share2 } from "lucide-react"; 
+import { ChevronLeft, Filter, Play, Share2 } from "lucide-react";
 
-// botões (Músicas | Artistas)
 function Chip({ active, onClick, children }) {
   return (
     <button
@@ -18,7 +17,6 @@ function Chip({ active, onClick, children }) {
   );
 }
 
-// item da lista
 function Row({ index, label }) {
   return (
     <button className="w-full flex items-center justify-between px-3 py-3 rounded-xl bg-white/90 hover:bg-white transition text-slate-900">
@@ -31,65 +29,107 @@ function Row({ index, label }) {
 
 export default function Top100Page() {
   const router = useRouter();
-  const [tab, setTab] = useState("songs"); // "songs" | "artists"
+  const [tab, setTab] = useState("songs");
+  const [visible, setVisible] = useState(10);
 
-  // dados MOCK só para UI (substitui quando tiveres API real)
+  // MOCK
   const songs = Array.from({ length: 100 }, (_, i) => `Música ${i + 1}`);
   const artists = Array.from({ length: 100 }, (_, i) => `Artista ${i + 1}`);
   const list = tab === "songs" ? songs : artists;
 
+  const items = list.slice(0, visible);
+  const hasMore = visible < list.length;
+
+  useEffect(() => {
+    setVisible(10);
+  }, [tab]);
+
+  const loadMore = () => setVisible(v => Math.min(v + 10, list.length));
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
       <div className="max-w-[420px] mx-auto pb-24">
-        {/*top100/Quadrado */}
-        <div className="pt-0">
-          <div className="mx-auto w-fit rounded-xl bg-white/90 text-slate-900 px-4 py-2 font-semibold shadow">
-            TOP #100
+
+        {/* HEADER FIXO (flutuante + glass) */}
+        <div className="sticky top-0 z-26 pointer-events-none">
+          {/* fade para transição suave do conteúdo */}
+          <div className="h-2 bg-gradient-to-b from-cyan-400/60 to-transparent" />
+          <div className="px-2 pb-2">
+            <div
+              className="
+                pointer-events-auto
+                mx-auto w-full
+                rounded-2xl
+                backdrop-blur-xl bg-white/10
+                ring-1 ring-white/20
+                shadow-lg
+              "
+            >
+              {/* badge TOP */}
+              <div className="pt-[env(safe-area-inset-top)] pt-2">
+                <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-sm font-semibold shadow">
+                  TOP #100
+                </div>
+              </div>
+
+              {/* voltar | tabs | filtro */}
+              <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-2">
+                <button
+                  onClick={() => router.back()}
+                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20"
+                  aria-label="Voltar"
+                >
+                  <ChevronLeft />
+                </button>
+
+                <div className="justify-self-center flex gap-2">
+                  <Chip active={tab === "songs"} onClick={() => setTab("songs")}>
+                    Músicas
+                  </Chip>
+                  <Chip active={tab === "artists"} onClick={() => setTab("artists")}>
+                    Artistas
+                  </Chip>
+                </div>
+
+                <button
+                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20"
+                  aria-label="Filtros"
+                >
+                  <Filter />
+                </button>
+              </div>
+
+              {/* ações */}
+              <div className="flex justify-center gap-2 px-4 pb-3">
+                <button className="px-3 py-1 rounded-full text-xs bg-white text-black flex items-center gap-2 shadow-sm">
+                  <Play size={14} /> Play
+                </button>
+                <button className="px-3 py-1 rounded-full text-xs bg-white/10 border border-white/30 hover:bg-white/20 flex items-center gap-2">
+                  <Share2 size={14} /> Compartilhar
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* linha: voltar | tabs | filtro */}
-        <div className="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-3 px-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 justify-self-start"
-            aria-label="Voltar"
-          >
-            <ChevronLeft />
-          </button>
-
-          <div className="justify-self-center flex gap-2">
-            <Chip active={tab === "songs"} onClick={() => setTab("songs")}>
-              Músicas
-            </Chip>
-            <Chip active={tab === "artists"} onClick={() => setTab("artists")}>
-              Artistas
-            </Chip>
-          </div>
-
-          <button
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 justify-self-end"
-            aria-label="Filtros"
-          >
-            <Filter />
-          </button>
-        </div>
-
-        {/* botões play/Compartilhar */}
-        <div className="mt-2 flex justify-center gap-2 px-4">
-          <button className="px-3 py-1 rounded-full text-xs bg-white text-black flex items-center gap-2">
-            <Play size={14} /> Play
-          </button>
-          <button className="px-3 py-1 rounded-full text-xs bg-white/10 border border-white/30 hover:bg-white/20 flex items-center gap-2">
-            <Share2 size={14} /> Compartilhar
-          </button>
-        </div>
-
-        {/* lista */}
+        {/* LISTA */}
         <div className="p-4 grid gap-3">
-          {list.map((label, i) => (
+          {items.map((label, i) => (
             <Row key={i} index={i + 1} label={label} />
           ))}
+
+          {hasMore ? (
+            <button
+              onClick={loadMore}
+              className="mt-2 mx-auto px-4 py-2 rounded-full text-sm bg-white text-slate-900 hover:opacity-90 shadow"
+            >
+              Ver mais
+            </button>
+          ) : (
+            <div className="text-center text-xs opacity-80 py-3">
+              Chegaste ao fim do TOP 100
+            </div>
+          )}
         </div>
       </div>
     </div>
