@@ -1,8 +1,7 @@
 import "@/styles/globals.css";
 import { Montserrat_Alternates } from 'next/font/google';
 import { UserProvider } from "../estadoGlobal/UserContext"; // Estado que altera nome e país ao editar perfil.
-
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 
 

@@ -1,6 +1,8 @@
-import { contarTotalMusicas, obterPrimeiraMusica, encontrarArtistaMaisOuvido } from '@/utils/dataProcessing'
-
+import { useSpotiHistory } from "@/hooks/useSpotiHistory";
+// import { contarTotalMusicas, obterPrimeiraMusica, encontrarArtistaMaisOuvido} from "@/utils/dataProcessing";
 export default function Home() {
+
+const {contarTotalMusicas, obterPrimeiraMusica, encontrarArtistaMaisOuvido} = useSpotiHistory
 
   return (
     <div className="space-y-6">
@@ -14,17 +16,17 @@ export default function Home() {
         
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-3xl font-bold text-green-600">{contarTotalMusicas()}</div>
+              <div className="text-3xl font-bold text-green-600">{contarTotalMusicas}</div>
               <div className="text-gray-700">Total de reproduções</div>
             </div>
             
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-lg font-semibold text-blue-600 truncate">{obterPrimeiraMusica()}</div>
+              <div className="text-lg font-semibold text-blue-600 truncate">{obterPrimeiraMusica}</div>
               <div className="text-gray-700">Primeira música no histórico</div>
             </div>
             
             <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-lg font-semibold text-purple-600 truncate">{encontrarArtistaMaisOuvido()}</div>
+              <div className="text-lg font-semibold text-purple-600 truncate">{encontrarArtistaMaisOuvido}</div>
               <div className="text-gray-700">Artista mais ouvido</div>
             </div>
           </div>
