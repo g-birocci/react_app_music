@@ -51,7 +51,7 @@ export function useSpotiHistory() {
   };
 
   const estacoesMaisOuvidas = () => {
-    if (!history || history.length === 0) return [];
+    if (!history || history.length === 0) return null;
 
     const contagemEstacoes = {};
     history.forEach(m => {
@@ -64,9 +64,11 @@ export function useSpotiHistory() {
       contagemEstacoes[estacao] = (contagemEstacoes[estacao] || 0) + 1;
     });
 
-    return Object.entries(contagemEstacoes)
-      .sort((a, b) => b[1] - a[1])
-      .map(([estacao, _]) => estacao);
+    // Ordena por contagem e pega a primeira estação que é a mais ouvida
+    const maisOuvida = Object.entries(contagemEstacoes)
+      .sort((a, b) => b[1] - a[1])[0]; // [estacao, quantidade]
+
+    return maisOuvida ? maisOuvida[0] : null;
   };
 
   // ------------------------
@@ -143,12 +145,12 @@ export function useSpotiHistory() {
   };
 
 
-    // ------------------------
+  // ------------------------
   // Pesquisar
   // ------------------------
 
   const pesquisar = (termo) => {
-    if (!history || !Array.isArray(history) || history.length === 0) return { musicas: [], albuns: [], artistas: []};
+    if (!history || !Array.isArray(history) || history.length === 0) return { musicas: [], albuns: [], artistas: [] };
 
     const termoLower = termo.toLowerCase()
 
@@ -156,7 +158,7 @@ export function useSpotiHistory() {
     const albuns = history.filter(m => m.master_metadata_album_name?.toLowerCase().includes(termoLower));
     const artistas = history.filter(m => m.master_metadata_album_artist_name?.toLowerCase().includes(termoLower));
 
-    return{
+    return {
       musicas, artistas, albuns
     }
   }
