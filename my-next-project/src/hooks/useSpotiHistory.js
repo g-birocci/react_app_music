@@ -87,17 +87,33 @@ export function useSpotiHistory() {
       .map(([artista, plays]) => ({ artista, plays }));
   };
 
-  const top100MusicasPorDuracao = () => {
-    if (!history || history.length === 0) return [];
-    return [...history]
-      .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
-      .slice(0, 100)
-      .map(m => ({
-        musica: m.master_metadata_track_name,
-        artista: m.master_metadata_album_artist_name,
-        ms_played: m.ms_played,
-      }));
-  };
+const top100MusicasPorDuracao = () => {
+  if (!history || history.length === 0) return [];
+
+  const contagem = {};
+
+  history.forEach(m => {
+    const musica = m.master_metadata_track_name;
+    const artista = m.master_metadata_album_artist_name;
+    if (musica && artista) {
+      const key = `${musica}—${artista}`;
+      contagem[key] = (contagem[key] || 0) + (m.ms_played || 0);
+    }
+  });
+
+  return Object.entries(contagem)
+    .sort((a, b) => b[1] - a[1]) // ordenar pelo tempo total tocado
+    .slice(0, 100)
+    .map(([key, ms_played]) => {
+      const [musica, artista] = key.split('—');
+      return { musica, artista, ms_played };
+    });
+};
+
+
+
+
+
 
   // ------------------------
   // Estatísticas de um artista
