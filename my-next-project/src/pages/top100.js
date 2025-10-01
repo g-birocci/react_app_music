@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { ChevronLeft, Filter, Play, Share2 } from "lucide-react"; // se preferir react-icons, vê nota abaixo
+import { ChevronLeft, Filter, Play, Share2 } from "lucide-react"; 
 
 // botões (Músicas | Artistas)
 function Chip({ active, onClick, children }) {
