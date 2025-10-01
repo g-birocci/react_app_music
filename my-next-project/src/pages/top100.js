@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ChevronLeft, Filter, Play, Share2 } from "lucide-react";
+import { useSpotiHistory } from "@/hooks/useSpotiHistory";
 
 function Chip({ active, onClick, children }) {
   return (
@@ -31,10 +32,11 @@ export default function Top100Page() {
   const router = useRouter();
   const [tab, setTab] = useState("songs");
   const [visible, setVisible] = useState(10);
-
+  const { top100Artistas, top100MusicasPorDuracao } = useSpotiHistory();
+  
   // MOCK
   const songs = Array.from({ length: 100 }, (_, i) => `Música ${i + 1}`);
-  const artists = Array.from({ length: 100 }, (_, i) => `Artista ${i + 1}`);
+  const artists = top100MusicasPorDuracao().map(m => m.artista);
   const list = tab === "songs" ? songs : artists;
 
   const items = list.slice(0, visible);

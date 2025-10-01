@@ -7,8 +7,8 @@ export default function handler(req, res) {
 export async function dadosHistory() {
   const response = await fetch("/data/history.json");
   if(!response.ok) {
-    throw new error("Erro ao carregar os dados")
+    throw new Error("Erro ao carregar os dados")
   }
-  return response.json;  
+  return response.json();  
 }
 

@@ -142,6 +142,25 @@ export function useSpotiHistory() {
       .map(([estacao, _]) => estacao);
   };
 
+
+    // ------------------------
+  // Pesquisar
+  // ------------------------
+
+  const pesquisar = (termo) => {
+    if (!history || !Array.isArray(history) || history.length === 0) return { musicas: [], albuns: [], artistas: []};
+
+    const termoLower = termo.toLowerCase()
+
+    const musicas = history.filter(m => m.master_metadata_track_name?.toLowerCase().includes(termoLower));
+    const albuns = history.filter(m => m.master_metadata_album_name?.toLowerCase().includes(termoLower));
+    const artistas = history.filter(m => m.master_metadata_album_artist_name?.toLowerCase().includes(termoLower));
+
+    return{
+      musicas, artistas, albuns
+    }
+  }
+
   // ------------------------
   // Retorno do Hook
   // ------------------------
@@ -163,5 +182,6 @@ export function useSpotiHistory() {
     top20MusicasDoArtista,
     posicaoArtistaTop100,
     estacoesDoArtista,
+    pesquisar
   };
 }
