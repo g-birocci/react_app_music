@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { ChevronLeft, Filter, Play, Share2 } from "lucide-react";
 import { useSpotiHistory } from "@/hooks/useSpotiHistory";
-
 
 function Chip({ active, onClick, children }) {
   return (
@@ -35,29 +34,31 @@ export default function Top100Page() {
   const { top100Artistas, top100MusicasPorDuracao } = useSpotiHistory();
   const [compartilhado, setCompartilhado] = useState(false);
 
+  useEffect(() => {
+    setVisible(10);
+  }, [tab]);
+
   function compartilhar() {
     setCompartilhado(true);
     setTimeout(() => setCompartilhado(false), 1500);
   }
 
-
-  // MOCK
-  const songs = Array.from({ length: 100 }, (_, i) => `Música ${i + 1}`);
-  const artists = top100MusicasPorDuracao().map(m => m.artista);
+  const songs = useMemo(() => top100MusicasPorDuracao() || [], [top100MusicasPorDuracao]);
+  const artists = useMemo(() => top100Artistas() || [], [top100Artistas]);
   const list = tab === "songs" ? songs : artists;
 
   const items = list.slice(0, visible);
   const hasMore = visible < list.length;
 
-  useEffect(() => {
-    setVisible(10);
-  }, [tab]);
+  if (!songs.length && !artists.length) {
+    return <div className="text-3xl font-bold">Carregando seu Top 100...</div>
+  }
 
   const loadMore = () => setVisible(v => Math.min(v + 10, list.length));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
-      <div className="max-w-[420px] mx-auto pb-24">
+      <div className="max-w-[420px] mx-auto pb-2">
 
 
         <div className="sticky top-0 z-26 pointer-events-none">
@@ -76,7 +77,7 @@ export default function Top100Page() {
             >
 
               <div className="pt-[env(safe-area-inset-top)] pt-2">
-                <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-sm font-semibold shadow">
+                <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-4xl font-semibold shadow">
                   TOP #100
                 </div>
               </div>
@@ -110,7 +111,8 @@ export default function Top100Page() {
 
               {/* ações */}
               <div className="justify-self-center flex gap-2 px-4 pb-3">
-                <button className="px-3 py-2 rounded-full text-xs bg-white text-black flex items-center gap-2 shadow-sm cursor-pointer">
+                <button className="flex items-center mt-3 bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-3 gap-2 rounded-full font-semibold cursor-pointer"
+>
                   <Play size={14} /> Play
                 </button>
 
@@ -134,8 +136,21 @@ export default function Top100Page() {
 
       {/* LISTA */}
       <div className="p-4 grid gap-3">
-        {items.map((label, i) => (
-          <Row key={i} index={i + 1} label={label} />
+
+        {items.map((item, i) => (
+          tab === "songs" ? (
+            <Row
+              key={i}
+              index={i + 1}
+              label={`${item.musica} — ${item.artista}`}
+            />
+          ) : (
+            <Row
+              key={i}
+              index={i + 1}
+              label={`${item.artista} (${item.plays} plays)`}
+            />
+          )
         ))}
 
         {hasMore ? (
