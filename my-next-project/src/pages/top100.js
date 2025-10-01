@@ -3,15 +3,15 @@ import { useRouter } from "next/router";
 import { ChevronLeft, Filter, Play, Share2 } from "lucide-react";
 import { useSpotiHistory } from "@/hooks/useSpotiHistory";
 
+
 function Chip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-8 py-2 rounded-full text-sm border transition ${
-        active
-          ? "bg-white text-slate-900 border-white shadow-sm"
-          : "bg-white/10 text-white border-white/40 hover:bg-white/20"
-      }`}
+      className={`px-8 py-2 rounded-full text-sm border transition ${active
+        ? "bg-white text-slate-900 border-white shadow-sm"
+        : "bg-white/10 text-white border-white/40 hover:bg-white/20"
+        }`}
     >
       {children}
     </button>
@@ -33,7 +33,14 @@ export default function Top100Page() {
   const [tab, setTab] = useState("songs");
   const [visible, setVisible] = useState(10);
   const { top100Artistas, top100MusicasPorDuracao } = useSpotiHistory();
-  
+  const [compartilhado, setCompartilhado] = useState(false);
+
+  function compartilhar() {
+    setCompartilhado(true);
+    setTimeout(() => setCompartilhado(false), 1500);
+  }
+
+
   // MOCK
   const songs = Array.from({ length: 100 }, (_, i) => `Música ${i + 1}`);
   const artists = top100MusicasPorDuracao().map(m => m.artista);
@@ -52,9 +59,9 @@ export default function Top100Page() {
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
       <div className="max-w-[420px] mx-auto pb-24">
 
-        
+
         <div className="sticky top-0 z-26 pointer-events-none">
-        
+
           <div className="h-2 bg-gradient-to-b from-cyan-400/60 to-transparent" />
           <div className="px-2 pb-2">
             <div
@@ -67,7 +74,7 @@ export default function Top100Page() {
                 shadow-lg
               "
             >
-              
+
               <div className="pt-[env(safe-area-inset-top)] pt-2">
                 <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-sm font-semibold shadow">
                   TOP #100
@@ -102,37 +109,47 @@ export default function Top100Page() {
               </div>
 
               {/* ações */}
-              <div className="flex justify-center gap-2 px-4 pb-3">
-                <button className="px-3 py-1 rounded-full text-xs bg-white text-black flex items-center gap-2 shadow-sm">
+              <div className="justify-self-center flex gap-2 px-4 pb-3">
+                <button className="px-3 py-2 rounded-full text-xs bg-white text-black flex items-center gap-2 shadow-sm cursor-pointer">
                   <Play size={14} /> Play
                 </button>
-                <button className="px-3 py-1 rounded-full text-xs bg-white/10 border border-white/30 hover:bg-white/20 flex items-center gap-2">
+
+                <button
+                  onClick={compartilhar}
+                  className="flex items-center mt-3 bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-3 gap-2 rounded-full font-semibold cursor-pointer"
+                >
                   <Share2 size={14} /> Compartilhar
                 </button>
+                {compartilhado && (
+                  <div className="absolute top-full mt-2 bg-white/10 text-white px-6 py-2 rounded shadow-md">
+                    Playlist compartilhada!
+                  </div>
+                )}
               </div>
+
             </div>
           </div>
         </div>
+      </div>
 
-        {/* LISTA */}
-        <div className="p-4 grid gap-3">
-          {items.map((label, i) => (
-            <Row key={i} index={i + 1} label={label} />
-          ))}
+      {/* LISTA */}
+      <div className="p-4 grid gap-3">
+        {items.map((label, i) => (
+          <Row key={i} index={i + 1} label={label} />
+        ))}
 
-          {hasMore ? (
-            <button
-              onClick={loadMore}
-              className="mt-2 mx-auto px-4 py-2 rounded-full text-sm bg-white text-slate-900 hover:opacity-90 shadow"
-            >
-              Ver mais
-            </button>
-          ) : (
-            <div className="text-center text-xs opacity-80 py-3">
-              Chegaste ao fim do TOP 100
-            </div>
-          )}
-        </div>
+        {hasMore ? (
+          <button
+            onClick={loadMore}
+            className="mt-2 mx-auto px-4 py-2 rounded-full text-sm bg-white text-slate-900 hover:opacity-90 shadow"
+          >
+            Ver mais
+          </button>
+        ) : (
+          <div className="text-center text-xs opacity-80 py-3">
+            Chegaste ao fim do TOP 100
+          </div>
+        )}
       </div>
     </div>
   );
