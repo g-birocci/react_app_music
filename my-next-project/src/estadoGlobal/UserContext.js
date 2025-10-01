@@ -1,3 +1,5 @@
+//Função para ajustar o estado do nome e país caso se alterem.
+
 import { createContext, useState } from "react";
 
 export const UserContext = createContext();
