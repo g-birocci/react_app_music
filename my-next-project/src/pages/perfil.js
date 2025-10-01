@@ -3,24 +3,40 @@ import { FaArrowLeft, FaCog } from 'react-icons/fa';
 import Link from "next/link";
 import { useContext } from "react";
 import { UserContext } from "../estadoGlobal/UserContext";
+import { useSpotiHistory } from "@/hooks/useSpotiHistory"; //importa as funções com as estatísticas
+import { useRouter } from "next/router";
 
 export default function Perfil() {
 
   const { user } = useContext(UserContext);
-
+  const router = useRouter();
   const [compartilhado, setCompartilhado] = useState(false);
+
+  const {
+    loading,
+    contarTotalMusicas,
+    contarMusicasDiferentes,
+    totalMinutosOuvidos,
+    mediaTempoDiario,
+    horariosMaisOuvidos,
+    estacoesMaisOuvidas,
+  } = useSpotiHistory();
 
   function compartilhar() {
     setCompartilhado(true);
     setTimeout(() => setCompartilhado(false), 1000);
   }
 
+  if (loading) return <p className="text-3xl font-bold">A carregar estatísticas...</p>;
+
   return (
     <div>
-
-      {/* Cabeçalho */}
       <div className="flex justify-between items-center px-4 pt-2">
-        <FaArrowLeft className="w-6 h-6 cursor-pointer" />
+        {/* Retorna para a página principal*/}
+        <FaArrowLeft
+          className="w-6 h-6 cursor-pointer"
+          onClick={() => router.push("/")}
+        />
 
         {/* Link para editar perfil */}
         <Link href="/editar-perfil">
@@ -39,7 +55,7 @@ export default function Perfil() {
         <p className="text-sm opacity-80">{user.pais}</p>
         <button
           onClick={compartilhar}
-          className="mt-3 bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-full font-semibold cursor-pointer"
+          className="mt-3 bg-white/30 backdrop-blur-sm text-white text-sm px-3 py-2 rounded-full font-semibold cursor-pointer"
         >
           Compartilhar Perfil
         </button>
@@ -52,40 +68,35 @@ export default function Perfil() {
 
       {/* Estatísticas */}
       <div className="mt-8">
-        <h3 className="text-3xl font-bold text-center mb-6 p-1">Estatísticas da conta</h3>
-        <div className="grid grid-cols-2 gap-6 text-center">
-          <div>
-            <p className="text-2xl font-bold">12847</p> {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Total de Plays</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">1500</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Músicas ouvidas</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">3445</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Média diária</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">127 min</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Músicas únicas</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">54912</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Minutos totais ouvidos</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">60</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Playlists</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">18h00</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Horário Favorito</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold">Verão</p>  {/* Buscar nas funções */}
-            <p className="text-sm opacity-80">Estação do Ano Favorita</p>
-          </div>
+        <h3 className="text-3xl font-bold text-center mb-6 p-5">Estatísticas da conta</h3>
+        <div>
+          <ul className="grid grid-cols-2 gap-7 text-center">
+
+            <li className="flex flex-col items-center">
+              <strong className="text-2xl font-bold">{contarTotalMusicas()}</strong>
+              <span className="text-sm">Total de Plays</span>
+            </li>
+            <li className="flex flex-col items-center">
+              <strong className="text-2xl font-bold">{contarMusicasDiferentes()}</strong>
+              <span className="text-sm">Músicas Diferentes</span>
+            </li>
+            <li className="flex flex-col items-center">
+              <strong className="text-2xl font-bold">{totalMinutosOuvidos()}</strong>
+              <span className="text-sm">Minutos Totais Ouvidos</span>
+            </li>
+            <li className="flex flex-col items-center">
+              <strong className="text-2xl font-bold">{mediaTempoDiario().toFixed(1)}</strong>
+              <span className="text-sm">Média Diária</span>
+            </li>
+            <li className="flex flex-col items-center">
+              <strong className="text-2xl font-bold">{horariosMaisOuvidos().slice(0, 3).join("h, ")}h</strong>
+              <span className="text-sm">Horários mais ouvidos</span>
+            </li>
+            <li className="flex flex-col items-center">
+              <strong className="text-2xl font-bold">{estacoesMaisOuvidas()}</strong>
+              <span className="text-sm">Estação favorita</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
