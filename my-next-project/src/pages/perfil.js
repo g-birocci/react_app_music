@@ -50,6 +50,8 @@ export default function Perfil() {
         <Image
           src="/Fotos/FotoPerfilSara.png"
           alt="Foto de Perfil"
+          width={160}
+          height={160}
           className="w-40 h-40 rounded-full"
         />
         <h2 className="mt-3 text-2xl font-bold">{user.nome}</h2>
