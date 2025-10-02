@@ -57,19 +57,17 @@ export default function Home() {
 
     return (
         <div className=""> 
-            
             {/* 1. NAV BAR */}
             <nav className="
-    fixed top-4 left-1/2 -translate-x-1/2
-     backdrop-blur-md
-    border border-gray-100
-    shadow-lg rounded-2xl
-    flex justify-around items-center
-    w-[90%] max-w-md py-2 px-2
-    text-black
-    transition-all
-  "
->
+                fixed top-4 left-1/2 -translate-x-1/2
+                backdrop-blur-md
+                border border-gray-100
+                shadow-lg rounded-2xl
+                flex justify-around items-center
+                w-[90%] max-w-md py-2 px-2
+                text-black
+                transition-all"
+            >
                 <ul className="flex items-center space-x-4">
                     <li>
                         <Image src="/Fotos/FotoPerfilSara.png" alt="Foto-Perfil" width={60} height={60} className="rounded-full" />
@@ -77,8 +75,6 @@ export default function Home() {
                     <li>
                         <p className="text-sm">Olá, <span className="font-bold">{nome}</span></p>
                     </li>
-                    
-                    
                 </ul>
             </nav>
 

@@ -8,7 +8,7 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/', icon: <FaHome size={22} />, label: 'Home' },
-    { href: '/top100', icon: <FaChartBar size={22} />, label: 'Rankin' },
+    { href: '/top100', icon: <FaChartBar size={22} />, label: 'Biblioteca' },
     { href: '/pesquisa', icon: <FaSearch size={22} />, label: 'Pesquisar' },
   ]
 
