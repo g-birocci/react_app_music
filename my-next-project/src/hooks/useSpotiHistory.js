@@ -23,13 +23,17 @@ export function useSpotiHistory() {
     })
     .filter(d => d !== null);
 
-  // 🔥 PROTEÇÃO CRÍTICA: se não há datas válidas, retorna vazio
   if (validDates.length === 0) {
     return [];
   }
 
-  // ✅ Agora é seguro usar Math.max
-  const now = new Date(Math.max(...validDates));
+  // ✅ Correção: evita Math.max(...array) com loop
+  let maxTime = validDates[0].getTime();
+  for (let i = 1; i < validDates.length; i++) {
+    const time = validDates[i].getTime();
+    if (time > maxTime) maxTime = time;
+  }
+  const now = new Date(maxTime);
 
   let cutoffDate;
   switch (period) {
