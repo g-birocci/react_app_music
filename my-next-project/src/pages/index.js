@@ -56,7 +56,7 @@ export default function Home() {
 
 
     return (
-        <div className="bg-gray-100 min-h-screen"> 
+        <div className=""> 
             
             {/* 1. NAV BAR */}
             <nav className="
@@ -92,7 +92,7 @@ export default function Home() {
                 />
 
                 {/* 3. SEÇÃO MAIS TOCADAS */}
-                <h2 className="text-3xl font-bold mt-8">Mais Tocadas</h2>
+                <h2 className="text-3xl color to-black font-bold mt-8">Mais Tocadas</h2>
                 <CadsMusic data={top100MusicasArray} /> 
             </div>
 

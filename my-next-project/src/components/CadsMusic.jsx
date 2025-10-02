@@ -16,7 +16,7 @@ export default function CadsMusic({ data }) {
 
     return (
         // Container do Carrossel com scroll horizontal
-        <div className="flex space-x-4 overflow-x-auto pb-4 px-1">
+        <div className="flex space-x-4 overflow-x-auto scrollbar-hide pb-4 px-1">
             
             {/* O .map() cria AUTOMATICAMENTE os cards */}
             {data.map((item, index) => (

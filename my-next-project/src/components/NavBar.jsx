@@ -7,8 +7,8 @@ export default function Navbar() {
   const isActive = (path) => router.pathname === path
 
   const navItems = [
-    { href: '/', icon: <FaHome size={22} />, label: 'Início' },
-    { href: '/estatisticas', icon: <FaChartBar size={22} />, label: 'Estatísticas' },
+    { href: '/', icon: <FaHome size={22} />, label: 'Home' },
+    { href: '/top100', icon: <FaChartBar size={22} />, label: 'Rankin' },
     { href: '/pesquisa', icon: <FaSearch size={22} />, label: 'Pesquisar' },
   ]
 
