@@ -1,5 +1,7 @@
+// src/pages/artista/eminem.jsx  (recomendo deixar o nome do ficheiro em minúsculas)
 import { useRouter } from "next/router";
 import { ChevronLeft } from "lucide-react";
+import { useSpotiHistory } from "@/hooks/useSpotiHistory";
 
 // Componente para cada métrica
 function Metric({ label, desc }) {
@@ -16,6 +18,26 @@ function Metric({ label, desc }) {
 export default function EminemPage() {
   const router = useRouter();
 
+  const {
+    loading,
+    posicaoArtistaTop100,
+    percentualPlaysDoArtista,
+    estacoesDoArtista,
+    totalMinutosOuvidos,
+    top20MusicasDoArtista,
+  } = useSpotiHistory();
+
+  const nome = "Eminem";
+  const period = "all"; // "4weeks" | "6months" | "1year" | "all"
+
+  if (loading) return <div className="text-white text-center mt-10">Carregando…</div>;
+
+  const posicao = posicaoArtistaTop100(nome, period) ?? "—";
+  const percent = percentualPlaysDoArtista(nome, period).toFixed(1);
+  const estacao = estacoesDoArtista(nome, period)[0] ?? "—";
+  const minutos = totalMinutosOuvidos(period);
+  const musicasDif = top20MusicasDoArtista(nome, period).length;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
       <div className="max-w-[420px] mx-auto pb-24 px-4">
@@ -28,9 +50,7 @@ export default function EminemPage() {
           >
             <ChevronLeft />
           </button>
-          <div className="ml-3 text-xs opacity-90 tracking-wide">
-            INFORMAÇÃO ARTISTA
-          </div>
+          <div className="ml-3 text-xs opacity-90 tracking-wide">INFORMAÇÃO ARTISTA</div>
         </div>
 
         {/* card do artista */}
@@ -43,37 +63,22 @@ export default function EminemPage() {
             />
           </div>
 
-          <h1 className="mt-4 text-3xl font-semibold text-center drop-shadow">
-            Eminem
-          </h1>
+          <h1 className="mt-4 text-3xl font-semibold text-center drop-shadow">{nome}</h1>
 
-          {/* badge Top#20 */}
+          {/* badge Top# */}
           <div className="mt-3 flex justify-center">
             <div className="px-6 py-2 rounded-full bg-white/85 text-slate-900 font-semibold shadow text-sm">
-              Top# 20
+              Top# {posicao}
             </div>
           </div>
 
           {/* métricas */}
           <div className="mt-8 space-y-5">
-            <Metric label="#1" desc="Posição deste artista no teu Top 100" />
-            <Metric label="9903" desc="Vezes que ouviste este artista" />
-            <Metric
-              label="Outono"
-              desc="Estação do ano em que mais ouves a música deste artista"
-            />
-            <Metric
-              label="8%"
-              desc="Porcentagem deste artista na tua playlist"
-            />
-            <Metric
-              label="130"
-              desc="Número de músicas diferentes que já ouviste deste artista"
-            />
-            <Metric
-              label="23912"
-              desc="Total de minutos que passaste a ouvir"
-            />
+            <Metric label={`#${posicao}`} desc="Posição deste artista no teu Top 100" />
+            <Metric label={`${percent}%`} desc="Porcentagem deste artista na tua playlist" />
+            <Metric label={estacao} desc="Estação do ano em que mais ouves a música deste artista" />
+            <Metric label={musicasDif} desc="Número de músicas diferentes que já ouviste deste artista" />
+            <Metric label={minutos} desc="Total de minutos que passaste a ouvir este artista" />
           </div>
         </div>
       </div>
