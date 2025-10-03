@@ -20,7 +20,7 @@ function Metric({ label, desc }) {
 export default function ArtistPage() {
   const router = useRouter()
   const { nome } = router.query
-  const [artistaNome, setArtistaNome] = useState("");
+  const [artistaNome, setArtistaNome] = useState("")
 
   const {
     percentualPlaysDoArtista,
@@ -34,27 +34,35 @@ export default function ArtistPage() {
   const [posicao, setPosicao] = useState('')
   const [estacoes, setEstacoes] = useState([])
 
-  const handleInfo = () => {
-    setEstacoes(estacoesDoArtista(artistaNome))
-    setPercentual(percentualPlaysDoArtista(artistaNome))
-    setPosicao(posicaoArtistaTop100(artistaNome))
-    setTop20(top20MusicasDoArtista(artistaNome)) // ✅ aqui, não top20
+  // Atualiza os estados do artista
+  const atualizarInfoArtista = (nomeArtista) => {
+    const novasEstacoes = estacoesDoArtista(nomeArtista)
+    const novoPercentual = percentualPlaysDoArtista(nomeArtista)
+    const novaPosicao = posicaoArtistaTop100(nomeArtista)
+    const novoTop20 = top20MusicasDoArtista(nomeArtista)
+
+    if (JSON.stringify(estacoes) !== JSON.stringify(novasEstacoes)) setEstacoes(novasEstacoes)
+    if (percentual !== novoPercentual) setPercentual(novoPercentual)
+    if (posicao !== novaPosicao) setPosicao(novaPosicao)
+    if (JSON.stringify(top20) !== JSON.stringify(novoTop20)) setTop20(novoTop20)
   }
 
-
-  // Atualiza estados quando os dados do hook mudam
+  // Atualiza estados quando o parâmetro "nome" muda
   useEffect(() => {
-    if (!nome) return;
-    setArtistaNome(decodeURIComponent(nome));
+    if (!nome) return
+    const decodedNome = decodeURIComponent(nome)
+    setArtistaNome(decodedNome)
 
-    if (top20MusicasDoArtista.length) handleInfo()
-  }, [nome, top20MusicasDoArtista, percentualPlaysDoArtista, posicaoArtistaTop100, estacoesDoArtista])
+    if (top20MusicasDoArtista.length) {
+      atualizarInfoArtista(decodedNome)
+    }
+  }, [nome, top20MusicasDoArtista])
 
   if (!nome) return <p>A carregar...</p>
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
-      <div className="max-w-[420px] mx-auto pb-24 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white relative">
+      <div className="max-w-[420px] mx-auto pb-32 px-4 relative z-10">
 
         {/* topo */}
         <div className="pt-3 flex items-center">
@@ -73,7 +81,6 @@ export default function ArtistPage() {
         {/* card do artista */}
         <div className="mt-5">
           <div className="mx-auto w-full">
-            {/* Você pode dinamizar a imagem dependendo do artista */}
             <img
               src="/Fotos/noImage.jpg"
               alt={artistaNome}
@@ -84,7 +91,6 @@ export default function ArtistPage() {
           <h1 className="mt-4 text-3xl font-semibold text-center drop-shadow">
             {artistaNome}
           </h1>
-
 
           {/* métricas dinâmicas */}
           <div className="mt-8 space-y-5">
@@ -110,7 +116,6 @@ export default function ArtistPage() {
                   <li key={i}>{m.musica} - {m.ms_played} min</li>
                 ))}
               </ul>
-
             ) : (
               <p>A carregar músicas...</p>
             )}

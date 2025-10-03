@@ -16,12 +16,13 @@ export default function Navbar() {
     <nav
       className="
         fixed bottom-4 left-1/2 -translate-x-1/2
-        z-50                     /* << sobe por cima de overlays */
+        z-[9999]                 /* << z-index mais alto para garantir prioridade */
         pointer-events-auto      /* << garante que recebe cliques */
         bg-white/80 backdrop-blur-md
         border border-gray-200 shadow-lg rounded-2xl
         flex justify-around items-center
         w-[90%] max-w-md py-2 px-2
+        isolate                  /* << cria novo contexto de empilhamento */
       "
     >
       {navItems.map((item) => (
