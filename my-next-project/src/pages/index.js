@@ -4,19 +4,17 @@ import Image from "next/image";
 import CadsMusic from "@/components/CadsMusic";
 import Link from "next/link";
 
-
 // -----------------------------------------------------------
 // Componente Auxiliar: Carrossel (Seção de Música)
 // -----------------------------------------------------------
 const CarouselSection = ({ title, data, className, isTop100 = false }) => {
     if (!data || data.length === 0) return null;
-    
+
     // O CadsMusic é o container que faz o loop com o MusicCard
     return (
         <section className="space-y-4">
             <h2 className={className}>{title}</h2>
-            
-            <CadsMusic data={data} isTop100={isTop100} /> 
+            <CadsMusic data={data} isTop100={isTop100} />
         </section>
     );
 };
@@ -25,36 +23,38 @@ const CarouselSection = ({ title, data, className, isTop100 = false }) => {
 // Componente Principal: HOME
 // -----------------------------------------------------------
 export default function Home() {
-    // Desestruturando os NOVOS NOMES de variáveis do hook
-    const { 
-        loading, 
-        totalMusicasValor, 
-        primeiraMusicaValor, 
+    // Desestruturando os valores do hook
+    const {
+        loading,
+        totalMusicasValor,
+        primeiraMusicaValor,
         artistaMaisOuvidoValor,
         top100MusicasArray, // Array para os carrosséis
-        pesquisar 
-    } = useSpotiHistory(); 
+        pesquisar
+    } = useSpotiHistory();
 
     const nome = "Sara";
-    
+
     const handleSearchClick = () => {
         const resultado = pesquisar("termo de exemplo");
         console.log("Resultado da Pesquisa:", resultado);
     };
 
-    // ⚠ CORREÇÃO APLICADA AQUI:
-    // Usando os valores retornados pelo hook (com sufixo 'Valor') para o fallback
+    // Valores fallback
     const total = totalMusicasValor || '...';
     const primeira = primeiraMusicaValor || 'A carregar...';
     const artista = artistaMaisOuvidoValor || 'A carregar...';
 
     if (loading) {
-        return <div className="max-w-[420px] mx-auto text-3xl font-bold text-center py-10">A carregar dados musicais...</div>;
+        return (
+            <div className="max-w-[420px] mx-auto text-3xl font-bold text-center py-10">
+                A carregar dados musicais...
+            </div>
+        );
     }
 
-
     return (
-        <div className=""> 
+        <div>
             {/* 1. NAV BAR */}
             <nav className="
                 fixed top-4 left-1/2 -translate-x-1/2
@@ -64,22 +64,24 @@ export default function Home() {
                 flex justify-around items-center
                 w-[90%] max-w-md py-2 px-2
                 text-black
-                transition-all"
-            >
+                transition-all
+            ">
                 <ul className="flex items-center space-x-4">
                     <li>
-<Link href="/perfil">
-  <Image
-    src="/Fotos/FotoPerfilSara.png"
-    alt="Foto-Perfil"
-    width={80}
-    height={80}
-    className="w-20 h-20 object-cover rounded-full cursor-pointer"
-  />
-</Link>
+                        <Link href="/perfil">
+                            <Image
+                                src="/Fotos/FotoPerfilSara.png"
+                                alt="Foto-Perfil"
+                                width={80}
+                                height={80}
+                                className="w-20 h-20 object-cover rounded-full cursor-pointer"
+                            />
+                        </Link>
                     </li>
                     <li>
-                        <p className="text-white text-md">Olá, <span className="text-white font-bold text-2xl">{nome}!</span></p>
+                        <p className="text-white text-md">
+                            Olá, <span className="text-white font-bold text-2xl">{nome}!</span>
+                        </p>
                     </li>
                 </ul>
             </nav>
@@ -91,15 +93,14 @@ export default function Home() {
                 <CarouselSection
                     title="Top 100 Músicas"
                     data={top100MusicasArray}
-                    className="text-3xl color to-black font-bold mt-8"
+                    className="text-3xl text-black font-bold mt-8"
                     isTop100
                 />
 
                 {/* 3. SEÇÃO MAIS TOCADAS */}
-                <h2 className="text-3xl color to-black font-bold mt-8">Ouvir novamente. . .</h2>
-                <CadsMusic data={top100MusicasArray} isTop100 /> 
+                <h2 className="text-3xl text-black font-bold mt-8">Ouvir novamente...</h2>
+                <CadsMusic data={top100MusicasArray} isTop100 />
             </div>
-
-        </div>
-    );
+        </div>
+    );
 }
