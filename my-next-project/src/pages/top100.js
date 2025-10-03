@@ -63,7 +63,7 @@ export default function Top100Page() {
   if (loading) {
     return (
       <div className="max-w-[420px] mx-auto text-3xl font-bold text-center py-10">
-        Carregando seu Top 100...
+        A carregar seu Top 100...
       </div>
     );
   }
