@@ -7,11 +7,10 @@ function Chip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-8 py-2 rounded-full text-sm border transition ${
-        active
+      className={`px-8 py-2 rounded-full text-sm border transition ${active
           ? "bg-white text-slate-900 border-white shadow-sm"
           : "bg-white/10 text-white border-white/40 hover:bg-white/20"
-      }`}
+        }`}
     >
       {children}
     </button>
@@ -29,11 +28,11 @@ function Row({ index, songs, artists, tab }) {
   return (
     <button className="w-full flex items-center justify-between px-3 py-3 rounded-xl bg-white/90 hover:bg-white transition text-slate-900">
       <span className="text-xs font-medium tracking-wider mr-3">#{index}</span>
-      <span className="flex-1 text-left text-sm">{ tab === 'songs' ? 
+      <span className="flex-1 text-left text-sm">{tab === 'songs' ?
         <span>
-      <span className="truncate">{songs[0]}</span> - {(formatTime(songs[2]))}
+          <span className="truncate">{songs[0]}</span> - {(formatTime(songs[2]))}
           <p className="text-xs text-neutral-500">Song by {songs[1]}</p>
-        </span> : `${artists}` }</span>
+        </span> : `${artists}`}</span>
       <Play size={16} className="text-neutral-400" />
     </button>
   );
@@ -160,47 +159,55 @@ export default function Top100Page() {
                 >
                   <Share2 size={14} /> Compartilhar
                 </button>
+
+
+                {/* Pop-up Compartilhar */}
+                {compartilhado && (
+                  <div className="absolute top-full mt-2 bg-white/10 text-white px-6 py-2 rounded shadow-md">
+                    Playlist compartilhada!
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
 
         {/* LISTA */}
-        <div className="p-4 grid gap-3">
-        {items.map((item, i) => (
-          tab === "songs" ? (
-            <Row
-              key={i}
-              index={i + 1}
-              songs={[item.musica || 'Música desconhecida', item.artista || 'Artista desconhecido', item.ms_played]}
-              artists=""
-              tab={tab}
-            />
-          ) : (
-            <Row
-              key={i}
-              index={i + 1}
-              songs=""
-              artists={`${item.artista || 'Artista desconhecido'} (${item.plays} plays)`}
-              tab={tab}
-            />
-          )
-        ))}
+        <div className="p-4 grid gap-3 mt-8">
+          {items.map((item, i) => (
+            tab === "songs" ? (
+              <Row
+                key={i}
+                index={i + 1}
+                songs={[item.musica || 'Música desconhecida', item.artista || 'Artista desconhecido', item.ms_played]}
+                artists=""
+                tab={tab}
+              />
+            ) : (
+              <Row
+                key={i}
+                index={i + 1}
+                songs=""
+                artists={`${item.artista || 'Artista desconhecido'} (${item.plays} plays)`}
+                tab={tab}
+              />
+            )
+          ))}
 
-        {hasMore ? (
-          <button
-            onClick={loadMore}
-            className="mt-2 mx-auto px-4 py-2 rounded-full text-sm bg-white text-slate-900 hover:opacity-90 shadow"
-          >
-            Ver mais
-          </button>
-        ) : (
-          <div className="text-center text-xs opacity-80 py-3">
-            Chegaste ao fim do TOP 100
-          </div>
-        )}
+          {hasMore ? (
+            <button
+              onClick={loadMore}
+              className="mt-2 mx-auto px-4 py-2 rounded-full text-sm bg-white text-slate-900 hover:opacity-90 shadow"
+            >
+              Ver mais
+            </button>
+          ) : (
+            <div className="text-center text-xs opacity-80 py-3">
+              Chegaste ao fim do TOP 100
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 }
