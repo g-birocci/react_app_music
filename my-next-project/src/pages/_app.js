@@ -3,6 +3,7 @@ import { Montserrat_Alternates } from 'next/font/google';
 import { UserProvider } from "../estadoGlobal/UserContext"; // Estado que altera nome e país ao editar perfil.
 import BottomBar from "@/components/BottomBar";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
 
 //LETRA PADRÃO PARA TODO O APLICATIVO
@@ -20,7 +21,7 @@ export default function App({ Component, pageProps }) {
         <main className="container mx-auto px-4 py-8 flex-grow">
           <Component {...pageProps} />
         </main>
-        <BottomBar />
+        <Navbar />
 </div>
         <Footer />
       </div>
