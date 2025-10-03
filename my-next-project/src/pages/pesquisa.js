@@ -61,7 +61,7 @@ export default function Pesquisa() {
     <>
       <Navbar />
       <div className="min-h-screen bg-gradient-to-b from-cyan-300 via-indigo-300 to-pink-400">
-        <div className="max-w-[520px] mx-auto px-5 pt-24 pb-28">
+        <div className="max-w-[520px] mx-auto px-8 pt-80 pb-28">
           {/* Hero */}
           <div className="text-center mb-6">
             <div className="flex justify-center mb-4">
