@@ -75,7 +75,7 @@ export default function ArtistPage() {
           <div className="mx-auto w-full">
             {/* Você pode dinamizar a imagem dependendo do artista */}
             <img
-              src="/Fotos/FotoEminem.png"
+              src="/Fotos/noImage.jpg"
               alt={artistaNome}
               className="w-full h-[320px] object-cover rounded-2xl shadow"
             />
