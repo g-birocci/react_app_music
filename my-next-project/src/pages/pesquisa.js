@@ -44,7 +44,7 @@ export default function Pesquisa() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-cyan-300 via-indigo-300 to-pink-400">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-cyan-300 ">
         <p className="max-w-[520px] w-full text-center text-white/95 text-xl font-semibold drop-shadow">
           A carregar histórico...
         </p>
