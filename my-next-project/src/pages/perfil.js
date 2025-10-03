@@ -49,7 +49,7 @@ export default function Perfil() {
         <img
           src="/Fotos/FotoPerfilSara.png"
           alt="Foto de Perfil"
-          className="w-40 h-40 rounded-full"
+          className="w-40 h-40 object-cover rounded-full"
         />
         <h2 className="mt-3 text-2xl font-bold">{user.nome}</h2>
         <p className="text-sm opacity-80">{user.pais}</p>

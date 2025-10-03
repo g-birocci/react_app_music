@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useSpotiHistory } from "@/hooks/useSpotiHistory"
 import SearchInput from "@/components/SearchInput"
 import SearchResults from "@/components/SearchResult"
+import Navbar from "@/components/Navbar";
 
 export default function Pesquisa() {
 
@@ -14,11 +15,15 @@ export default function Pesquisa() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">🔍 Pesquisar</h1>
-      <p className="text-gray-600 mb-6">Encontre seus artistas, músicas e álbuns favoritos</p>
+<>
+      <Navbar name={`deafult`}/>
+<div className="pt-20">
+      <div className="p-4">
       <SearchInput termo={termo} setTermo={setTermo}/>
+      </div>
       <SearchResults musicas={musicas} albuns={albuns} artistas={artistas} termo={termo}/>
-    </div>
+
+</div>
+</>
   )
 }

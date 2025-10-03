@@ -2,7 +2,7 @@
 
 import { useSpotiHistory } from "@/hooks/useSpotiHistory";
 import { Search } from "lucide-react"; 
-import Image from "next/image";
+import Navbar from "@/components/Navbar";
 import CadsMusic from "@/components/CadsMusic"; 
 
 
@@ -56,34 +56,12 @@ export default function Home() {
 
 
     return (
-        <div className=""> 
+        <div className="relative"> 
             
             {/* 1. NAV BAR */}
-            <nav className="
-    fixed top-4 left-1/2 -translate-x-1/2
-     backdrop-blur-md
-    border border-gray-100
-    shadow-lg rounded-2xl
-    flex justify-around items-center
-    w-[90%] max-w-md py-2 px-2
-    text-black
-    transition-all
-  "
->
-                <ul className="flex items-center space-x-4">
-                    <li>
-                        <Image src="/Fotos/FotoPerfilSara.png" alt="Foto-Perfil" width={60} height={60} className="rounded-full" />
-                    </li>
-                    <li>
-                        <p className="text-sm">Olá, <span className="font-bold">{nome}</span></p>
-                    </li>
-                    
-                    
-                </ul>
-            </nav>
-
+    <Navbar name={nome}/>
             {/* CONTEÚDO PRINCIPAL */}
-            <div className="space-y-10 py-6 md:py-10 max-w-7xl mx-auto px-4 md:px-0">
+            <div className="space-y-10 pt-25 md:py-10 max-w-7xl mx-auto px-4 md:px-0">
 
                 {/* 2. CARROSSEL TOP 100 */}
                 <CarouselSection 

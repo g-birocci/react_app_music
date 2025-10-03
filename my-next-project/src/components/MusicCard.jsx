@@ -7,7 +7,7 @@ export default function MusicCard({ title, artist, coverUrl }) {
   const finalCoverUrl = coverUrl || "/covers/placeholder-album.jpg";
 
   return (
-    <div className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[180px] cursor-pointer group">
+    <div className="flex-shrink-0 w-30 sm:w-[160px] md:w-[180px] cursor-pointer group">
       
       {/* Container da Capa (com efeito hover) */}
       <div className="relative w-full aspect-square rounded-xl shadow-md overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:scale-[1.03]">
@@ -20,9 +20,9 @@ export default function MusicCard({ title, artist, coverUrl }) {
       </div>
       
       {/* Detalhes da Música */}
-      <div className="mt-2 text-center">
+      <div className="mt-2 text-left">
         <h3 className="text-sm font-bold text-gray-900 truncate">{title}</h3>
-        <p className="text-xs text-gray-500 truncate">{artist}</p>
+        <p className="text-xs text-gray-300 truncate">{artist}</p>
       </div>
     </div>
   );

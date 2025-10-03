@@ -89,14 +89,15 @@ export function useSpotiHistory() {
 
   const top100MusicasPorDuracao = () => {
     if (!history || history.length === 0) return [];
-    return [...history]
-      .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
-      .slice(0, 100)
-      .map(m => ({
-        musica: m.master_metadata_track_name,
-        artista: m.master_metadata_album_artist_name,
-        ms_played: m.ms_played,
-      }));
+return history
+    .filter(m => m.master_metadata_track_name)
+    .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
+    .slice(0, 100)
+    .map(m => ({
+      musica: m.master_metadata_track_name,
+      artista: m.master_metadata_album_artist_name,
+      ms_played: m.ms_played,
+    }));
   };
 
   // ------------------------
@@ -155,7 +156,7 @@ export function useSpotiHistory() {
     const termoLower = termo.toLowerCase()
 
     const musicas = history.filter(m => m.master_metadata_track_name?.toLowerCase().includes(termoLower));
-    const albuns = history.filter(m => m.master_metadata_album_name?.toLowerCase().includes(termoLower));
+    const albuns = history.filter(m => m.master_metadata_album_album_name?.toLowerCase().includes(termoLower));
     const artistas = history.filter(m => m.master_metadata_album_artist_name?.toLowerCase().includes(termoLower));
 
     return {
