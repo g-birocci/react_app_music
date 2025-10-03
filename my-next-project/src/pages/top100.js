@@ -121,7 +121,7 @@ export default function Top100Page() {
 
                 <div className="relative">
                   <button
-                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 cursor-pointer"
+                    className="p-0 rounded-xl bg-white/10 hover:bg-white/20 cursor-pointer"
                     onClick={() => setShowMenu(prev => !prev)}
                     aria-label="Filtros"
                   >
