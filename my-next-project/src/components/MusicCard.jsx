@@ -16,6 +16,12 @@ export default function MusicCard({ title, artist, coverUrl }) {
           alt={`Capa da música ${title}`}
           layout="fill"
           objectFit="cover"
+          onError={(e) => {
+            const img = e?.target;
+            if (img && img.src && !img.src.endsWith('/covers/placeholder-album.jpg')) {
+              img.src = '/covers/placeholder-album.jpg';
+            }
+          }}
         />
       </div>
       
