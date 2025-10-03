@@ -51,7 +51,7 @@ export default function Home() {
     const artista = artistaMaisOuvidoValor || 'Carregando...';
 
     if (loading) {
-        return <div className="text-center p-10 text-xl text-gray-600">Carregando dados musicais...</div>;
+        return <div className="max-w-[420px] mx-auto text-3xl font-bold text-center py-10">A carregar dados musicais...</div>;
     }
 
 
