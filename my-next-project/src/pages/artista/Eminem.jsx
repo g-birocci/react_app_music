@@ -58,7 +58,7 @@ export default function EminemPage() {
           <div className="mx-auto w-full">
             <img
               src="/Fotos/FotoEminem.png"
-              alt="Emine"
+              alt="Eminem"
               className="w-full h-[320px] object-cover rounded-2xl shadow"
             />
           </div>
