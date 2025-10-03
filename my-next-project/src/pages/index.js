@@ -52,35 +52,44 @@ export default function Home() {
     <div>
       {/* NAV BAR */}
       <nav
-        className="
-          fixed top-4 left-1/2 -translate-x-1/2
-          backdrop-blur-md
-          border border-gray-100
-          shadow-lg rounded-2xl
-          flex justify-around items-center
-          w-[90%] max-w-md py-2 px-2
-          transition-all
-        "
-      >
-        <ul className="flex items-center space-x-4">
-          <li>
-            <Link href="/perfil">
-              <Image
-                src="/Fotos/FotoPerfilSara.png"
-                alt="Foto-Perfil"
-                width={80}
-                height={80}
-                className="w-20 h-20 object-cover rounded-full cursor-pointer"
-              />
-            </Link>
-          </li>
-          <li>
-            <p className="text-white text-md">
-              Olá, <span className="text-white font-bold text-2xl">{nome}!</span>
-            </p>
-          </li>
-        </ul>
-      </nav>
+  className="
+    fixed top-4 left-1/2 -translate-x-1/2
+    backdrop-blur-md
+    border border-gray-100
+    shadow-lg rounded-2xl
+    flex justify-between items-center
+    w-[90%] max-w-md py-2 px-4
+    transition-all
+  "
+>
+  {/* Esquerda: Foto + Nome */}
+  <div className="flex items-center space-x-3">
+    <Link href="/perfil">
+      <Image
+        src="/Fotos/FotoPerfilSara.png"
+        alt="Foto-Perfil"
+        width={60}
+        height={60}
+        className="w-14 h-14 object-cover rounded-full cursor-pointer"
+      />
+    </Link>
+    <p className="text-white text-md">
+      Olá, <span className="text-white font-bold text-lg">{nome}!</span>
+    </p>
+  </div>
+
+  {/* Direita: Logo */}
+  <div>
+    <Image
+      src="/Fotos/logo_all_music.png"
+      alt="Logo do App"
+      width={50}
+      height={50}
+      className="w-12 h-12 object-contain"
+    />
+  </div>
+</nav>
+
 
       {/* CONTEÚDO PRINCIPAL */}
       <div className="space-y-10 py-6 md:py-10 max-w-7xl mx-auto px-4 md:px-0 mt-15">
