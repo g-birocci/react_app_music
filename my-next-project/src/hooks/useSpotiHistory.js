@@ -1,221 +1,269 @@
-import { useEffect, useState } from "react";
-import { dadosHistory } from "@/pages/api/hello"; // ou fetch("/history.json")
+import { useEffect, useState, useMemo } from "react";
+import { dadosHistory } from "@/pages/api/hello";
 
 export function useSpotiHistory() {
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    dadosHistory()
-      .then(setHistory)
-      .finally(() => setLoading(false));
-  }, []);
+  useEffect(() => {
+    dadosHistory()
+      .then(setHistory)
+      .finally(() => setLoading(false));
+  }, []);
 
-  // ------------------------
-  // Estatísticas Gerais
-  // ------------------------
-  const contarTotalMusicas = () => history?.length || 0;
+  // ✅ Função pura: calcula a data mais recente DO PRÓPRIO conjunto de dados
+  const filterByPeriod = (data, period) => {
+  if (period === "all") return data;
+  if (!Array.isArray(data) || data.length === 0) return [];
 
-  const contarMusicasDiferentes = () => {
-    if (!history || history.length === 0) return 0;
-    const unique = new Set(history.map(m => m.master_metadata_track_name));
-    return unique.size;
-  };
+  const validDates = data
+    .map(item => {
+      const d = new Date(item?.ts);
+      return isNaN(d.getTime()) ? null : d;
+    })
+    .filter(d => d !== null);
 
-  const totalMinutosOuvidos = () => {
-    if (!history || history.length === 0) return 0;
-    const totalMs = history.reduce((acc, m) => acc + (m.ms_played || 0), 0);
-    return Math.floor(totalMs / 60000); // ms → minutos
-  };
+  if (validDates.length === 0) {
+    return [];
+  }
 
-  const mediaTempoDiario = () => {
-    if (!history || history.length === 0) return 0;
+  // ✅ Correção: evita Math.max(...array) com loop
+  let maxTime = validDates[0].getTime();
+  for (let i = 1; i < validDates.length; i++) {
+    const time = validDates[i].getTime();
+    if (time > maxTime) maxTime = time;
+  }
+  const now = new Date(maxTime);
 
-    const dias = new Set(history.map(m => new Date(m.ts).toDateString()));
-    const minutos = totalMinutosOuvidos();
-    return minutos / dias.size;
-  };
+  let cutoffDate;
+  switch (period) {
+    case "4weeks":
+      cutoffDate = new Date(now.getTime() - 28 * 24 * 60 * 60 * 1000);
+      break;
+    case "6months":
+      cutoffDate = new Date(now);
+      cutoffDate.setMonth(cutoffDate.getMonth() - 6);
+      break;
+    case "1year":
+      cutoffDate = new Date(now);
+      cutoffDate.setFullYear(cutoffDate.getFullYear() - 1);
+      break;
+    default:
+      return data;
+  }
 
-  const horariosMaisOuvidos = () => {
-    if (!history || history.length === 0) return [];
+  return data.filter(item => {
+    const itemDate = new Date(item?.ts);
+    return !isNaN(itemDate.getTime()) && itemDate >= cutoffDate;
+  });
+};
 
-    const contagemHoras = {};
-    history.forEach(m => {
-      const hora = new Date(m.ts).getHours();
-      contagemHoras[hora] = (contagemHoras[hora] || 0) + 1;
-    });
+  // ------------------------
+  // Estatísticas Gerais
+  // ------------------------
+  const contarTotalMusicas = (period = "all") => {
+    return filterByPeriod(history, period).length;
+  };
 
-    return Object.entries(contagemHoras)
-      .sort((a, b) => b[1] - a[1])
-      .map(([hora, _]) => parseInt(hora));
-  };
+  const contarMusicasDiferentes = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return 0;
+    const unique = new Set(filtered.map(m => m.master_metadata_track_name));
+    return unique.size;
+  };
 
-  const estacoesMaisOuvidas = () => {
-    if (!history || history.length === 0) return null;
+  const totalMinutosOuvidos = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return 0;
+    const totalMs = filtered.reduce((acc, m) => acc + (m.ms_played || 0), 0);
+    return Math.floor(totalMs / 60000);
+  };
 
-    const contagemEstacoes = {};
-    history.forEach(m => {
-      const month = new Date(m.ts).getMonth() + 1;
-      let estacao = "";
-      if ([12, 1, 2].includes(month)) estacao = "Inverno";
-      else if ([3, 4, 5].includes(month)) estacao = "Primavera";
-      else if ([6, 7, 8].includes(month)) estacao = "Verão";
-      else estacao = "Outono";
-      contagemEstacoes[estacao] = (contagemEstacoes[estacao] || 0) + 1;
-    });
+  const mediaTempoDiario = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return 0;
+    const dias = new Set(filtered.map(m => {
+      const d = new Date(m.ts);
+      return isNaN(d.getTime()) ? null : d.toDateString();
+    }).filter(Boolean));
+    const minutos = totalMinutosOuvidos(period);
+    return dias.size ? minutos / dias.size : 0;
+  };
 
-    // Ordena por contagem e pega a primeira estação que é a mais ouvida
-    const maisOuvida = Object.entries(contagemEstacoes)
-      .sort((a, b) => b[1] - a[1])[0]; // [estacao, quantidade]
+  const horariosMaisOuvidos = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return [];
+    const contagemHoras = {};
+    filtered.forEach(m => {
+      const d = new Date(m.ts);
+      if (isNaN(d.getTime())) return;
+      const hora = d.getHours();
+      contagemHoras[hora] = (contagemHoras[hora] || 0) + 1;
+    });
+    return Object.entries(contagemHoras)
+      .sort((a, b) => b[1] - a[1])
+      .map(([hora]) => parseInt(hora));
+  };
 
-    return maisOuvida ? maisOuvida[0] : null;
-  };
+  const estacoesMaisOuvidas = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return null;
+    const contagemEstacoes = {};
+    filtered.forEach(m => {
+      const d = new Date(m.ts);
+      if (isNaN(d.getTime())) return;
+      const month = d.getMonth() + 1;
+      let estacao = "";
+      if ([12, 1, 2].includes(month)) estacao = "Inverno";
+      else if ([3, 4, 5].includes(month)) estacao = "Primavera";
+      else if ([6, 7, 8].includes(month)) estacao = "Verão";
+      else estacao = "Outono";
+      contagemEstacoes[estacao] = (contagemEstacoes[estacao] || 0) + 1;
+    });
+    const maisOuvida = Object.entries(contagemEstacoes)
+      .sort((a, b) => b[1] - a[1])[0];
+    return maisOuvida ? maisOuvida[0] : null;
+  };
 
-  // ------------------------
-  // Top 100
-  // ------------------------
-  const top100Artistas = () => {
-    if (!history || history.length === 0) return [];
-    const contagem = {};
-    history.forEach(m => {
-      const artista = m.master_metadata_album_artist_name;
-      if (artista) contagem[artista] = (contagem[artista] || 0) + 1;
-    });
-    return Object.entries(contagem)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 100)
-      .map(([artista, plays]) => ({ artista, plays }));
-  };
+  // ------------------------
+  // Top 100
+  // ------------------------
+  const top100Artistas = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return [];
+    const contagem = {};
+    filtered.forEach(m => {
+      const artista = m.master_metadata_album_artist_name;
+      if (artista) contagem[artista] = (contagem[artista] || 0) + 1;
+    });
+    return Object.entries(contagem)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 100)
+      .map(([artista, plays]) => ({ artista, plays }));
+  };
 
-  const top100MusicasPorDuracao = () => {
-    if (!history || history.length === 0) return [];
-return history
-    .filter(m => m.master_metadata_track_name)
-    .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
-    .slice(0, 100)
-    .map(m => ({
-      musica: m.master_metadata_track_name,
-      artista: m.master_metadata_album_artist_name,
-      ms_played: m.ms_played,
-    }));
-  };
+  const top100MusicasPorDuracao = (period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return [];
+    return [...filtered]
+      .filter(m => 
+        m.master_metadata_track_name && 
+        m.master_metadata_album_artist_name &&
+        m.ms_played > 30000
+      )
+      .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
+      .slice(0, 100)
+      .map(m => ({
+        musica: m.master_metadata_track_name,
+        artista: m.master_metadata_album_artist_name,
+        ms_played: m.ms_played,
+      }));
+  };
 
-  // ------------------------
-  // Estatísticas de um artista
-  // ------------------------
-  const percentualPlaysDoArtista = (artistaNome) => {
-    if (!history || history.length === 0) return 0;
-    const total = history.length;
-    const plays = history.filter(m => m.master_metadata_album_artist_name === artistaNome).length;
-    return (plays / total) * 100;
-  };
+  // ------------------------
+  // Estatísticas de artista
+  // ------------------------
+  const percentualPlaysDoArtista = (artistaNome, period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return 0;
+    const total = filtered.length;
+    const plays = filtered.filter(m => m.master_metadata_album_artist_name === artistaNome).length;
+    return total ? (plays / total) * 100 : 0;
+  };
 
-  const top20MusicasDoArtista = (artistaNome) => {
-    if (!history || history.length === 0) return [];
-    return history
-      .filter(m => m.master_metadata_album_artist_name === artistaNome)
-      .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
-      .slice(0, 20)
-      .map(m => ({ musica: m.master_metadata_track_name, ms_played: m.ms_played }));
-  };
+  const top20MusicasDoArtista = (artistaNome, period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return [];
+    return filtered
+      .filter(m => m.master_metadata_album_artist_name === artistaNome)
+      .sort((a, b) => (b.ms_played || 0) - (a.ms_played || 0))
+      .slice(0, 20)
+      .map(m => ({ musica: m.master_metadata_track_name, ms_played: m.ms_played }));
+  };
 
-  const posicaoArtistaTop100 = (artistaNome) => {
-    const top = top100Artistas();
-    const idx = top.findIndex(a => a.artista === artistaNome);
-    return idx >= 0 ? idx + 1 : null;
-  };
+  const posicaoArtistaTop100 = (artistaNome, period = "all") => {
+    const top = top100Artistas(period);
+    const idx = top.findIndex(a => a.artista === artistaNome);
+    return idx >= 0 ? idx + 1 : null;
+  };
 
-  const estacoesDoArtista = (artistaNome) => {
-    if (!history || history.length === 0) return [];
-    const contagemEstacoes = {};
-    history
-      .filter(m => m.master_metadata_album_artist_name === artistaNome)
-      .forEach(m => {
-        const month = new Date(m.ts).getMonth() + 1;
-        let estacao = "";
-        if ([12, 1, 2].includes(month)) estacao = "Inverno";
-        else if ([3, 4, 5].includes(month)) estacao = "Primavera";
-        else if ([6, 7, 8].includes(month)) estacao = "Verão";
-        else estacao = "Outono";
-        contagemEstacoes[estacao] = (contagemEstacoes[estacao] || 0) + 1;
-      });
+  const estacoesDoArtista = (artistaNome, period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered.length) return [];
+    const contagemEstacoes = {};
+    filtered
+      .filter(m => m.master_metadata_album_artist_name === artistaNome)
+      .forEach(m => {
+        const d = new Date(m.ts);
+        if (isNaN(d.getTime())) return;
+        const month = d.getMonth() + 1;
+        let estacao = "";
+        if ([12, 1, 2].includes(month)) estacao = "Inverno";
+        else if ([3, 4, 5].includes(month)) estacao = "Primavera";
+        else if ([6, 7, 8].includes(month)) estacao = "Verão";
+        else estacao = "Outono";
+        contagemEstacoes[estacao] = (contagemEstacoes[estacao] || 0) + 1;
+      });
+    return Object.entries(contagemEstacoes)
+      .sort((a, b) => b[1] - a[1])
+      .map(([estacao]) => estacao);
+  };
 
-    return Object.entries(contagemEstacoes)
-      .sort((a, b) => b[1] - a[1])
-      .map(([estacao, _]) => estacao);
-  };
+  const pesquisar = (termo, period = "all") => {
+    const filtered = filterByPeriod(history, period);
+    if (!filtered?.length) {
+      return { musicas: [], albuns: [], artistas: [] };
+    }
+    const termoLower = termo.toLowerCase();
+    const musicas = filtered.filter(m => m.master_metadata_track_name?.toLowerCase().includes(termoLower));
+    const albuns = filtered.filter(m => m.master_metadata_album_name?.toLowerCase().includes(termoLower));
+    const artistas = filtered.filter(m => m.master_metadata_album_artist_name?.toLowerCase().includes(termoLower));
+    return { musicas, artistas, albuns };
+  };
 
+  // -----------------------------------------------------------
+  // ⬇️ CÁLCULOS FINAIS (sempre "all")
+  // -----------------------------------------------------------
 
-  // ------------------------
-  // Pesquisar
-  // ------------------------
+  const totalMusicasValor = useMemo(() => history.length, [history]);
 
-  const pesquisar = (termo) => {
-    if (!history || !Array.isArray(history) || history.length === 0) return { musicas: [], albuns: [], artistas: [] };
+  const topArtistasCalculado = useMemo(() => top100Artistas("all"), [history, top100Artistas]);
 
-    const termoLower = termo.toLowerCase()
+  const artistaMaisOuvidoValor = topArtistasCalculado[0]?.artista || 'N/A';
 
-    const musicas = history.filter(m => m.master_metadata_track_name?.toLowerCase().includes(termoLower));
-    const albuns = history.filter(m => m.master_metadata_album_album_name?.toLowerCase().includes(termoLower));
-    const artistas = history.filter(m => m.master_metadata_album_artist_name?.toLowerCase().includes(termoLower));
+  const primeiraMusicaValor = useMemo(() => 
+    history[0] 
+      ? `${history[0].master_metadata_track_name} - ${history[0].master_metadata_album_artist_name}`
+      : 'N/A',
+    [history]
+  );
 
-    return {
-      musicas, artistas, albuns
-    }
-  }
+  const top100MusicasArray = useMemo(() => top100MusicasPorDuracao("all"), [history]);
 
-// -----------------------------------------------------------
-// ⬇️ CÁLCULOS FINAIS (Prontos para o componente) ⬇️
-// -----------------------------------------------------------
+  // -----------------------------------------------------------
+  // ⬆️ FIM
+  // -----------------------------------------------------------
 
-  const totalMusicasValor = contarTotalMusicas(); 
-
-  const topArtistasCalculado = top100Artistas();
-  const artistaMaisOuvidoValor = topArtistasCalculado[0]?.artista || 'N/A';
-
-  const primeiraMusicaValor = history[0] 
-    ? `${history[0].master_metadata_track_name} - ${history[0].master_metadata_album_artist_name}`
-    : 'N/A';
-  
-  const top100MusicasArray = top100MusicasPorDuracao();
-
-// -----------------------------------------------------------
-// ⬆️ FIM DOS CÁLCULOS FINAIS ⬆️
-// -----------------------------------------------------------
-
-
-  // ------------------------
-  // Retorno do Hook
-  // ------------------------
-  return {
-  history,
-  loading,
-  
-  // *** VALORES PRONTOS PARA USO ***
-  totalMusicasValor,        // Para o card de "Total de reproduções"
-  primeiraMusicaValor,      // Para o card de "Primeira música no histórico"
-  artistaMaisOuvidoValor,   // Para o card de "Artista mais ouvido"
-  top100MusicasArray,       // Para alimentar o carrossel
-
-  // --- FUNÇÕES E MÉTODOS EXISTENTES (NÃO REMOVIDOS) ---
-  // Estatísticas gerais
-  contarTotalMusicas,
-  contarMusicasDiferentes,
-  totalMinutosOuvidos,
-  mediaTempoDiario,
-  horariosMaisOuvidos,
-  estacoesMaisOuvidas,
-  
-  // Top 100
-  top100Artistas,
-  top100MusicasPorDuracao,
-  
-  // Estatísticas de artista
-  percentualPlaysDoArtista,
-  top20MusicasDoArtista,
-  posicaoArtistaTop100,
-  estacoesDoArtista,
-  
-  pesquisar
-  };
+  return {
+    history,
+    loading,
+    totalMusicasValor,
+    primeiraMusicaValor,
+    artistaMaisOuvidoValor,
+    top100MusicasArray,
+    // Funções com suporte a período
+    contarTotalMusicas,
+    contarMusicasDiferentes,
+    totalMinutosOuvidos,
+    mediaTempoDiario,
+    horariosMaisOuvidos,
+    estacoesMaisOuvidas,
+    top100Artistas,
+    top100MusicasPorDuracao,
+    percentualPlaysDoArtista,
+    top20MusicasDoArtista,
+    posicaoArtistaTop100,
+    estacoesDoArtista,
+    pesquisar,
+  };
 }

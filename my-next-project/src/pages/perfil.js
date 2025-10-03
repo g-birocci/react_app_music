@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { UserContext } from "../estadoGlobal/UserContext";
 import { useSpotiHistory } from "@/hooks/useSpotiHistory"; //importa as funções com as estatísticas
 import { useRouter } from "next/router";
+import Image from 'next/image';
 
 export default function Perfil() {
 
@@ -46,10 +47,12 @@ export default function Perfil() {
 
       {/* Perfil */}
       <div className="flex flex-col items-center mt-6">
-        <img
+        <Image
           src="/Fotos/FotoPerfilSara.png"
           alt="Foto de Perfil"
-          className="w-40 h-40 object-cover rounded-full"
+          width={160}
+          height={160}
+          className="w-40 h-40 rounded-full"
         />
         <h2 className="mt-3 text-2xl font-bold">{user.nome}</h2>
         <p className="text-sm opacity-80">{user.pais}</p>

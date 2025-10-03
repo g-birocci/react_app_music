@@ -7,9 +7,9 @@ export default function BottomBar() {
   const isActive = (path) => router.pathname === path
 
   const navItems = [
-    { href: '/', icon: <FaHome size={20} />, label: 'Home' },
-    { href: '/top100', icon: <FaChartBar size={20} />, label: 'Rankin' },
-    { href: '/pesquisa', icon: <FaSearch size={20} />, label: 'Pesquisar' },
+    { href: '/', icon: <FaHome size={22} />, label: 'Home' },
+    { href: '/top100', icon: <FaChartBar size={22} />, label: 'Biblioteca' },
+    { href: '/pesquisa', icon: <FaSearch size={22} />, label: 'Pesquisar' },
   ]
 
   return (

@@ -11,7 +11,9 @@ export default function Pesquisa() {
   const {musicas, albuns, artistas} = pesquisar(termo)
 
   if (loading) {
-    return <p>A carregar histórico</p>
+    return <p className="max-w-[420px] mx-auto text-3xl font-bold text-center py-10">
+      A carregar histórico...
+      </p>
   }
 
   return (
