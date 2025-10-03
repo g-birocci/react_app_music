@@ -80,6 +80,7 @@ export default function Home() {
                                 className="w-20 h-20 rounded-full cursor-pointer"
                             />
                         </Link>
+                      
                     </li>
                     <li>
                         <p className="text-white text-md">Olá, <span className="text-white font-bold text-2xl">{nome}!</span></p>
