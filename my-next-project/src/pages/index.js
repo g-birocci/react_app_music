@@ -1,7 +1,9 @@
 // pages/index.js
 import { useSpotiHistory } from "@/hooks/useSpotiHistory";
 import Image from "next/image";
-import CadsMusic from "@/components/CadsMusic"; 
+import CadsMusic from "@/components/CadsMusic";
+import Link from "next/link";
+
 
 // -----------------------------------------------------------
 // Componente Auxiliar: Carrossel (Seção de Música)
@@ -66,10 +68,15 @@ export default function Home() {
             >
                 <ul className="flex items-center space-x-4">
                     <li>
-                        <a href="perfil">
-                            <Image src="/Fotos/FotoPerfilSara.png" alt="Foto-Perfil" width={60} height={60} className="rounded-full" />
-                        </a>
-                        
+<Link href="/perfil">
+  <Image
+    src="/Fotos/FotoPerfilSara.png"
+    alt="Foto-Perfil"
+    width={80}
+    height={80}
+    className="w-20 h-20 object-cover rounded-full cursor-pointer"
+  />
+</Link>
                     </li>
                     <li>
                         <p className="text-white text-md">Olá, <span className="text-white font-bold text-2xl">{nome}!</span></p>
@@ -78,7 +85,7 @@ export default function Home() {
             </nav>
 
             {/* CONTEÚDO PRINCIPAL */}
-            <div className="space-y-10 py-6 md:py-10 max-w-7xl mx-auto px-4 md:px-0">
+            <div className="space-y-10 py-6 md:py-10 max-w-7xl mx-auto px-4 md:px-0 mt-15">
 
                 {/* 2. CARROSSEL TOP 100 */}
                 <CarouselSection
