@@ -22,11 +22,11 @@ export default function ArtistPage() {
   const { nome } = router.query
   const [artistaNome, setArtistaNome] = useState("");
 
-  const { 
-    percentualPlaysDoArtista, 
-    top20MusicasDoArtista, 
-    posicaoArtistaTop100, 
-    estacoesDoArtista 
+  const {
+    percentualPlaysDoArtista,
+    top20MusicasDoArtista,
+    posicaoArtistaTop100,
+    estacoesDoArtista
   } = useSpotiHistory()
 
   const [percentual, setPercentual] = useState('')
@@ -40,22 +40,22 @@ export default function ArtistPage() {
     setPosicao(posicaoArtistaTop100(artistaNome))
     setTop20(top20MusicasDoArtista(artistaNome)) // ✅ aqui, não top20
   }
-  
+
 
   // Atualiza estados quando os dados do hook mudam
   useEffect(() => {
     if (!nome) return;
     setArtistaNome(decodeURIComponent(nome));
-  
+
     if (top20MusicasDoArtista.length) handleInfo()
   }, [nome, top20MusicasDoArtista, percentualPlaysDoArtista, posicaoArtistaTop100, estacoesDoArtista])
-  
-  if (!nome) return <p>Carregando...</p>
+
+  if (!nome) return <p>A carregar...</p>
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white">
       <div className="max-w-[420px] mx-auto pb-24 px-4">
-        
+
         {/* topo */}
         <div className="pt-3 flex items-center">
           <button
@@ -85,17 +85,18 @@ export default function ArtistPage() {
             {artistaNome}
           </h1>
 
-          {/* badge Top#20 */}
-          <div className="mt-3 flex justify-center">
-            <div className="px-6 py-2 rounded-full bg-white/85 text-slate-900 font-semibold shadow text-sm">
-              Top# 20
-            </div>
-          </div>
 
           {/* métricas dinâmicas */}
           <div className="mt-8 space-y-5">
             <Metric label={`#${posicao || '-'}`} desc="Posição deste artista no teu Top 100" />
-            <Metric label={`${percentual || '-'}`} desc="Porcentagem deste artista na tua playlist" />
+            <Metric
+              label={
+                percentual != null && !isNaN(Number(percentual))
+                  ? `${Number(percentual).toFixed(2).replace('.', ',')}%`
+                  : '-'
+              }
+              desc="Porcentagem deste artista na tua playlist"
+            />
             <Metric label={top20.length || '-'} desc="Número de músicas diferentes que já ouviste deste artista" />
             <Metric label={estacoes.join(', ') || '-'} desc="Estações do ano em que mais ouves este artista" />
           </div>
@@ -105,13 +106,13 @@ export default function ArtistPage() {
             <h2 className="text-xl font-semibold mb-2">Top 20 Músicas</h2>
             {top20.length > 0 ? (
               <ul>
-              {top20.map((m, i) => (
-                <li key={i}>{m.musica} - {m.ms_played} min</li>
-              ))}
-            </ul>
-            
+                {top20.map((m, i) => (
+                  <li key={i}>{m.musica} - {m.ms_played} min</li>
+                ))}
+              </ul>
+
             ) : (
-              <p>Carregando músicas...</p>
+              <p>A carregar músicas...</p>
             )}
           </div>
         </div>
