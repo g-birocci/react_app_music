@@ -26,17 +26,44 @@ function Row({ index, songs, artists, tab }) {
   };
 
   return (
-    <button className="w-full flex items-center justify-between px-3 py-3 rounded-xl bg-white/90 hover:bg-white transition text-slate-900">
-      <span className="text-xs font-medium tracking-wider mr-3">#{index}</span>
-      <span className="flex-1 text-left text-sm">{tab === 'songs' ?
-        <span>
-          <span className="truncate">{songs[0]}</span> - {(formatTime(songs[2]))}
-          <p className="text-xs text-neutral-500">Song by {songs[1]}</p>
-        </span> : `${artists}`}</span>
-      <Play size={16} className="text-neutral-400" />
+    <button
+      className="
+        relative w-full
+        flex items-center justify-between
+        px-3 pr-6 py-3
+        rounded-xl bg-white/90 hover:bg-white transition text-slate-900
+        overflow-hidden
+      "
+    >
+      {/* barra decorativa presa dentro do cartão */}
+      <span
+        aria-hidden="true"
+        className="absolute right-0 top-0 h-full w-2 bg-gradient-to-b from-cyan-400 via-indigo-400 to-fuchsia-400"
+      />
+
+      {/* conteúdo acima da barra */}
+      <span className="relative z-10 text-xs font-medium tracking-wider mr-3">
+        #{index}
+      </span>
+
+      <span className="relative z-10 flex-1 text-left text-sm min-w-0">
+        {tab === "songs" ? (
+          <span>
+            <span className="truncate">{songs[0]}</span> - {formatTime(songs[2])}
+            <p className="text-xs text-neutral-500 truncate">
+              Song by {songs[1]}
+            </p>
+          </span>
+        ) : (
+          <span className="truncate">{artists}</span>
+        )}
+      </span>
+
+      <Play size={16} className="relative z-10 text-neutral-400 shrink-0" />
     </button>
   );
 }
+
 
 export default function Top100Page() {
   const router = useRouter();
