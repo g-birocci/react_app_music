@@ -15,7 +15,7 @@ const mont = Montserrat_Alternates({
 export default function App({ Component, pageProps }) {
   return (
     <UserProvider>
-      <div className={`${mont.className} max-w-[420px] mx-auto min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white flex flex-col`}>
+      <div className={`${mont.className} max-w-[600px] mx-auto min-h-screen bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-500 text-white flex flex-col`}>
       
       <div className="relative min-h-screen">
         <main className="container mx-auto px-4 py-8 flex-grow">
