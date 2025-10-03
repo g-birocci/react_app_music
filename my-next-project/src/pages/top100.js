@@ -7,11 +7,10 @@ function Chip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-8 py-2 rounded-full text-sm border transition ${
-        active
-          ? "bg-white text-slate-900 border-white shadow-sm"
-          : "bg-white/10 text-white border-white/40 hover:bg-white/20"
-      }`}
+      className={`px-8 py-2 rounded-full text-sm border transition ${active
+        ? "bg-white text-slate-900 border-white shadow-sm"
+        : "bg-white/10 text-white border-white/40 hover:bg-white/20"
+        }`}
     >
       {children}
     </button>
@@ -34,6 +33,8 @@ export default function Top100Page() {
   const [visible, setVisible] = useState(10);
   const { top100Artistas, top100MusicasPorDuracao, loading } = useSpotiHistory();
   const [compartilhado, setCompartilhado] = useState(false);
+  const [aTocar, setATocar] = useState(false);
+
   const [period, setPeriod] = useState("all");
   const [showMenu, setShowMenu] = useState(false);
 
@@ -44,6 +45,11 @@ export default function Top100Page() {
   function compartilhar() {
     setCompartilhado(true);
     setTimeout(() => setCompartilhado(false), 1500);
+  }
+
+  function play() {
+    setATocar(true);
+    setTimeout(() => setATocar(false), 1500);
   }
 
   const songs = useMemo(() => {
@@ -124,10 +130,18 @@ export default function Top100Page() {
 
               {/* ações */}
               <div className="justify-self-center flex gap-2 px-4 pb-3">
-                <button className="flex items-center mt-3 bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-3 gap-2 rounded-full font-semibold cursor-pointer">
+                <button
+                  onClick={play}
+                  className="flex items-center mt-3 bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-3 gap-2 rounded-full font-semibold cursor-pointer"
+                >
                   <Play size={14} /> Play
                 </button>
-
+                {/* Pop-up Play */}
+                {aTocar && (
+                  <div className="absolute top-full mt-2 bg-white/10 text-white px-6 py-2 rounded shadow-md">
+                    Playlist a tocar!
+                  </div>
+                )}
                 <button
                   onClick={compartilhar}
                   className="flex items-center mt-3 bg-white/30 backdrop-blur-sm text-white text-xs px-3 py-3 gap-2 rounded-full font-semibold cursor-pointer"
