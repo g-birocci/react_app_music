@@ -7,21 +7,23 @@ export default function Navbar() {
   const isActive = (path) => router.pathname === path
 
   const navItems = [
-    { href: '/', icon: <FaHome size={22} />, label: 'Home' },
-    { href: '/top100', icon: <FaChartBar size={22} />, label: 'Biblioteca' },
-    { href: '/pesquisa', icon: <FaSearch size={22} />, label: 'Pesquisar' },
+    { href: '/',        icon: <FaHome size={22} />,      label: 'Home' },
+    { href: '/top100',  icon: <FaChartBar size={22} />,  label: 'Biblioteca' },
+    { href: '/pesquisa',icon: <FaSearch size={22} />,    label: 'Pesquisar' },
   ]
 
   return (
-    <nav className="
-      fixed bottom-4 left-1/2 -translate-x-1/2
-      bg-white/80 backdrop-blur-md
-      border border-gray-200
-      shadow-lg rounded-2xl
-      flex justify-around items-center
-      w-[90%] max-w-md py-2 px-2
-      transition-all
-    ">
+    <nav
+      className="
+        fixed bottom-4 left-1/2 -translate-x-1/2
+        z-50                     /* << sobe por cima de overlays */
+        pointer-events-auto      /* << garante que recebe cliques */
+        bg-white/80 backdrop-blur-md
+        border border-gray-200 shadow-lg rounded-2xl
+        flex justify-around items-center
+        w-[90%] max-w-md py-2 px-2
+      "
+    >
       {navItems.map((item) => (
         <Link
           key={item.href}
@@ -39,6 +41,6 @@ export default function Navbar() {
           <span className="text-xs font-medium">{item.label}</span>
         </Link>
       ))}
-    </nav>
-  )
+    </nav>
+  )
 }
