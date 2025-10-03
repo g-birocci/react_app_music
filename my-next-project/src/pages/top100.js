@@ -120,7 +120,8 @@ export default function Top100Page() {
         <div className="sticky top-0 z-26 pointer-events-none">
           <div className="h-2 bg-gradient-to-b from-cyan-400/60 to-transparent" />
           <div className="px-2 pb-2">
-            <div className="pointer-events-auto mx-auto w-full rounded-2xl backdrop-blur-xl bg-white/10 ring-1 ring-white/20 shadow-lg">
+<div className="pointer-events-auto mx-auto w-full rounded-2xl
+     backdrop-blur-xl bg-cyan-500/80 ring-1 ring-cyan-500/40 shadow-lg">
               <div className="pt-[max(env(safe-area-inset-top),0.5rem)]">
                 <div className="mx-auto w-fit rounded-full bg-white/90 text-slate-900 px-3 py-1 text-4xl font-semibold shadow">
                   TOP #100
