@@ -33,19 +33,18 @@ export default function Pesquisa() {
       } finally {
         if (!cancelado) setCarregandoPesquisa(false);
       }
-    }, 250); // 250–300ms fica confortável
+    }, 250); 
 
     return () => {
       cancelado = true;
       clearTimeout(t);
     };
-    // não incluí 'pesquisar' nas deps para evitar re-execução por identidade instável
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [termo]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-cyan-300 via-indigo-300 to-pink-400">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-cyan-300 ">
         <p className="max-w-[520px] w-full text-center text-white/95 text-xl font-semibold drop-shadow">
           A carregar histórico...
         </p>
@@ -60,7 +59,7 @@ export default function Pesquisa() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-cyan-300 via-indigo-300 to-pink-400">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-6000 ">
         <div className="max-w-[520px] mx-auto px-8 pt-80 pb-28">
           {/* Hero */}
           <div className="text-center mb-6">
@@ -91,9 +90,7 @@ export default function Pesquisa() {
             <p className="text-center text-lg text-white/90 py-12">Nenhum resultado encontrado 😢</p>
           ) : (
             // Cartão largo envolvendo o SearchResults (como na 2ª imagem)
-            <div className="rounded-2xl bg-white/95 shadow-xl p-4 text-slate-900">
-              {/* força conteúdo a não ficar estreito */}
-              <div className="[&_*]:max-w-full">
+            <div className="rounded-2xl bg-white/95 shadow-xl p-4 text-slate-900">           <div className="[&_*]:max-w-full">
                 <SearchResults
                   musicas={musicas}
                   albuns={albuns}
