@@ -1,9 +1,10 @@
 // pages/index.js
 
 import { useSpotiHistory } from "@/hooks/useSpotiHistory";
-import { Search } from "lucide-react"; 
+//import { Search } from "lucide-react";
 import Image from "next/image";
-import CadsMusic from "@/components/CadsMusic"; 
+import CadsMusic from "@/components/CadsMusic";
+import Link from "next/link";
 
 
 // -----------------------------------------------------------
@@ -11,13 +12,13 @@ import CadsMusic from "@/components/CadsMusic";
 // -----------------------------------------------------------
 const CarouselSection = ({ title, data, className }) => {
     if (!data || data.length === 0) return null;
-    
+
     // O CadsMusic é o container que faz o loop com o MusicCard
     return (
         <section className="space-y-4">
             <h2 className={className}>{title}</h2>
-            
-            <CadsMusic data={data} /> 
+
+            <CadsMusic data={data} />
         </section>
     );
 };
@@ -28,17 +29,17 @@ const CarouselSection = ({ title, data, className }) => {
 // -----------------------------------------------------------
 export default function Home() {
     // Desestruturando os NOVOS NOMES de variáveis do hook
-    const { 
-        loading, 
-        totalMusicasValor, 
-        primeiraMusicaValor, 
+    const {
+        loading,
+        totalMusicasValor,
+        primeiraMusicaValor,
         artistaMaisOuvidoValor,
         top100MusicasArray, // Array para os carrosséis
-        pesquisar 
-    } = useSpotiHistory(); 
+        pesquisar
+    } = useSpotiHistory();
 
     const nome = "Sara";
-    
+
     const handleSearchClick = () => {
         const resultado = pesquisar("termo de exemplo");
         console.log("Resultado da Pesquisa:", resultado);
@@ -56,7 +57,7 @@ export default function Home() {
 
 
     return (
-        <div className=""> 
+        <div className="">
             {/* 1. NAV BAR */}
             <nav className="
                 fixed top-4 left-1/2 -translate-x-1/2
@@ -70,7 +71,15 @@ export default function Home() {
             >
                 <ul className="flex items-center space-x-4">
                     <li>
-                        <Image src="/Fotos/FotoPerfilSara.png" alt="Foto-Perfil" width={60} height={60} className="rounded-full" />
+                        <Link href="/perfil">
+                            <Image
+                                src="/Fotos/FotoPerfilSara.png"
+                                alt="Foto-Perfil"
+                                width={160}
+                                height={160}
+                                className="w-20 h-20 rounded-full cursor-pointer"
+                            />
+                        </Link>
                     </li>
                     <li>
                         <p className="text-white text-md">Olá, <span className="text-white font-bold text-2xl">{nome}!</span></p>
@@ -79,11 +88,11 @@ export default function Home() {
             </nav>
 
             {/* CONTEÚDO PRINCIPAL */}
-            <div className="space-y-10 py-6 md:py-10 max-w-7xl mx-auto px-4 md:px-0">
+            <div className="space-y-10 py-6 md:py-10 max-w-7xl mx-auto px-4 md:px-0 mt-20">
 
                 {/* 2. CARROSSEL TOP 100 */}
                 <CarouselSection
-                     title ="Top 100 Músicas" 
+                    title="Top 100 Músicas"
                     data={top100MusicasArray} // ⚠️ CORRIGIDO: Usando o nome correto do array
                     className="text-3xl color to-black font-bold mt-8"
 
@@ -91,7 +100,7 @@ export default function Home() {
 
                 {/* 3. SEÇÃO MAIS TOCADAS */}
                 <h2 className="text-3xl color to-black font-bold mt-8">Mais Tocadas</h2>
-                <CadsMusic data={top100MusicasArray} /> 
+                <CadsMusic data={top100MusicasArray} />
             </div>
 
         </div>

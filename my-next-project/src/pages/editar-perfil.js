@@ -2,6 +2,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { UserContext } from "../estadoGlobal/UserContext";
+import Image from 'next/image';
 
 export default function EditarPerfil() {
     const { user, setUser } = useContext(UserContext);
@@ -28,10 +29,12 @@ export default function EditarPerfil() {
             </div>
 
             <div className="flex flex-col items-center mt-8">
-                <img
+                <Image
                     src="/Fotos/FotoPerfilSara.png"
-                    alt="Foto de Perfil"
-                    className="w-24 h-24 rounded-full"
+                    alt="Foto-Perfil"
+                    width={160}
+                    height={160}
+                    className="w-20 h-20 rounded-full"
                 />
                 <h2 className="mt-4 text-2xl font-light">Editar Perfil</h2>
             </div>
