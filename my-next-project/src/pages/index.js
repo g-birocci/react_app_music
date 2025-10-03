@@ -70,7 +70,10 @@ export default function Home() {
             >
                 <ul className="flex items-center space-x-4">
                     <li>
-                        <Image src="/Fotos/FotoPerfilSara.png" alt="Foto-Perfil" width={60} height={60} className="rounded-full" />
+                        <a href="perfil">
+                            <Image src="/Fotos/FotoPerfilSara.png" alt="Foto-Perfil" width={60} height={60} className="rounded-full" />
+                        </a>
+                        
                     </li>
                     <li>
                         <p className="text-sm">Olá, <span className="font-bold">{nome}</span></p>
